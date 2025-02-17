@@ -1,3 +1,5 @@
+const ROOT_URL = window.location.origin + '/Blog-Dambwe/';
+
 let selectedCategories = [];
 
 function toggleCategory(id, title) {
