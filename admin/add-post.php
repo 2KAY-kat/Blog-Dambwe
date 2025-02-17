@@ -28,21 +28,18 @@ $categories = mysqli_query($connection, $query);
         <?php while($category = mysqli_fetch_assoc($categories)): ?>
             <div class="category-item" 
                  data-id="<?= $category['id'] ?>" 
-                 onclick="toggleCategory(<?= $category['id'] ?>, '<?= $category['title'] ?>')"
+                 onclick="toggleCategory(<?= $category['id'] ?>, '<?= htmlspecialchars($category['title'], ENT_QUOTES) ?>')"
                  <?php if(isset($post_categories) && in_array($category['id'], array_column($post_categories, 'id'))): ?>
                     class="selected"
                  <?php endif; ?>>
-                <?= $category['title'] ?>
+                <?= htmlspecialchars($category['title']) ?>
             </div>
         <?php endwhile ?>
     </div>
     <div class="selected-categories" id="selected-categories">
-        <!-- Selected categories will appear here as tags -->
-        <?php if(empty($post_categories)): ?>
-            <em style="color: var(--color-gray-300)">Selected categories will appear here</em>
-        <?php endif ?>
+        <em style="color: var(--color-gray-300)">Select at least one category</em>
     </div>
-    <input type="hidden" name="categories[]" id="categories-input" value="">
+    <input type="hidden" name="categories[]" id="categories-input" value="" required>
 </div>
 
             <textarea rows="10" name="body" placeholder="Body"><?= $body ?? '' ?></textarea>

@@ -5,90 +5,81 @@ if (isset($_POST['submit'])) {
     $author_id = $_SESSION['user-id'];
     $title = filter_var($_POST['title'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $body = filter_var($_POST['body'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $category_id = filter_var($_POST['category'], FILTER_SANITIZE_NUMBER_INT);
-    $is_featured = filter_var($_POST['is_featured'], FILTER_SANITIZE_NUMBER_INT);
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     $thumbnail = $_FILES['thumbnail'];
 
-    // is feutured
-
-    $is_featured = $is_featured == 1 ?: 0;
-
-    // validate data
-
+    // Validate basic post data
     if (!$title) {
         $_SESSION['add-post'] = "Enter Post Title";
-    } elseif (!$category_id) {
-        $_SESSION['add-post'] = "Select category";
     } elseif (!$body) {
         $_SESSION['add-post'] = "Enter Post body";
     } elseif (!$thumbnail['name']) {
         $_SESSION['add-post'] = "Select Thumbnail for the Post";
     } else {
-        //process $thumbnail
+        // Process thumbnail
         $time = time();
         $thumbnail_name = $time . $thumbnail['name'];
         $thumbnail_tmp_name = $thumbnail['tmp_name'];
         $thumbnail_destination_path = '../images/' . $thumbnail_name;
 
-        // safe checking
-
+        // Validate thumbnail
         $allowed_files = ['png', 'jpg', 'jpeg'];
-        $extention = explode('.', $thumbnail_name);
-        $extention = end($extention);
-        if (in_array($extention, $allowed_files)) {
-            // image size no more than(2mb+)
-            if ($thumbnail['size'] < 2_000_000) {
-                // upload the thumnail
-
-                move_uploaded_file($thumbnail_tmp_name, $thumbnail_destination_path);
-            } else {
-                $_SESSION['add-post'] = "File should be less than 2mb";
-            }
-        } else {
+        $extension = explode('.', $thumbnail_name);
+        $extension = end($extension);
+        
+        if (!in_array($extension, $allowed_files)) {
             $_SESSION['add-post'] = "File Should be png, jpg or jpeg";
-        }
-    }
-
-    // Validate categories
-    $categories = isset($_POST['categories']) ? $_POST['categories'] : [];
-    $categories = explode(',', $categories[0]); // Convert comma-separated string to array
-    
-    if(empty($categories)) {
-        $_SESSION['add-post'] = "Please select at least one category";
-    } else {
-        // Continue with post creation if we have categories
-        if(!isset($_SESSION['add-post'])) {
-            // set is_featured of all posts to 0 and 1 for the featured one
-
-            if ($is_featured == 1) {
-                $zero_all_is_featured_query = "UPDATE posts SET is_featured=0";
-                $zero_all_is_featured_result = mysqli_query($connection, $zero_all_is_featured_query);
+        } elseif ($thumbnail['size'] > 2000000) {
+            $_SESSION['add-post'] = "File should be less than 2mb";
+        } else {
+            // Get categories
+            $categories = isset($_POST['categories']) ? $_POST['categories'] : [];
+            if (is_string($categories[0])) {
+                $categories = explode(',', $categories[0]);
             }
-            //inset int db
 
-            $query = "INSERT INTO posts (title, body, thumbnail, date_time, author_id, is_featured) VALUES ('$title', '$body', '$thumbnail_name', now(), $author_id, $is_featured)";
-            $result = mysqli_query($connection, $query);
-
-            if (mysqli_errno($connection)) {
-                $_SESSION['add-post'] = "Couldn't create post";
+            if (empty($categories)) {
+                $_SESSION['add-post'] = "Please select at least one category";
             } else {
-                $post_id = mysqli_insert_id($connection);
-                // Insert categories
-                foreach($categories as $category_id) {
-                    if(!empty($category_id)) {
-                        $category_id = filter_var($category_id, FILTER_SANITIZE_NUMBER_INT);
-                        $query = "INSERT INTO post_categories (post_id, category_id) 
-                                VALUES ($post_id, $category_id)";
-                        mysqli_query($connection, $query);
-                    }
+                // Upload thumbnail
+                move_uploaded_file($thumbnail_tmp_name, $thumbnail_destination_path);
+
+                // Update featured status if necessary
+                if ($is_featured) {
+                    $zero_all_featured_query = "UPDATE posts SET is_featured=0";
+                    mysqli_query($connection, $zero_all_featured_query);
                 }
-                $_SESSION['add-post-success'] = "New post added successfully";
-                header('location: ' . ROOT_URL . 'admin/');
-                die();
+
+                // Create post
+                $query = "INSERT INTO posts (title, body, thumbnail, date_time, author_id, is_featured) 
+                         VALUES (?, ?, ?, NOW(), ?, ?)";
+                $stmt = mysqli_prepare($connection, $query);
+                mysqli_stmt_bind_param($stmt, 'sssii', $title, $body, $thumbnail_name, $author_id, $is_featured);
+                
+                if (mysqli_stmt_execute($stmt)) {
+                    $post_id = mysqli_insert_id($connection);
+                    
+                    // Insert categories
+                    foreach ($categories as $category_id) {
+                        if (!empty($category_id)) {
+                            $category_id = filter_var($category_id, FILTER_SANITIZE_NUMBER_INT);
+                            $cat_query = "INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)";
+                            $cat_stmt = mysqli_prepare($connection, $cat_query);
+                            mysqli_stmt_bind_param($cat_stmt, 'ii', $post_id, $category_id);
+                            mysqli_stmt_execute($cat_stmt);
+                        }
+                    }
+                    
+                    $_SESSION['add-post-success'] = "New post added successfully";
+                    header('location: ' . ROOT_URL . 'admin/');
+                    die();
+                } else {
+                    $_SESSION['add-post'] = "Database error: " . mysqli_error($connection);
+                }
             }
         }
     }
-    
+
     if (isset($_SESSION['add-post'])) {
         $_SESSION['add-post-data'] = $_POST;
         header('location: ' . ROOT_URL . 'admin/add-post.php');
@@ -98,10 +89,3 @@ if (isset($_POST['submit'])) {
 
 header('location: ' . ROOT_URL . 'admin/');
 die();
-
-
-
-// what i added 
-// ALTER TABLE posts ADD CONSTRAINT FK_blog_category FOREIGN KEY(category_id) REFERENCES categories(id)ON DELETE SET NULL;
-
-// ALTER TABLE posts ADD CONSTRAINT FK_blog_author FOREIGN KEY(author_id)REFERENCES users (id) ON DELETE CASCADE;
