@@ -63,23 +63,33 @@ if(isset($_POST['submit'])) {
             }
 
             // Update post
-            $query = "UPDATE posts SET title=?, body=?, thumbnail=?, is_featured=? WHERE id=?";
+            $query = "UPDATE posts SET title=?, body=?, thumbnail=? WHERE id=?";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, "sssii", $title, $body, $thumbnail_name, $is_featured, $id);
+            mysqli_stmt_bind_param($stmt, "sssi", $title, $body, $thumbnail_name, $id);
             
             if(mysqli_stmt_execute($stmt)) {
-                // Delete old categories
-                mysqli_query($connection, "DELETE FROM post_categories WHERE post_id=$id");
+                // Delete existing category relationships
+                $delete_cats = "DELETE FROM post_categories WHERE post_id = ?";
+                $delete_stmt = mysqli_prepare($connection, $delete_cats);
+                mysqli_stmt_bind_param($delete_stmt, 'i', $id);
+                mysqli_stmt_execute($delete_stmt);
                 
                 // Insert new categories
+                $categories = isset($_POST['categories']) ? $_POST['categories'] : [];
+                if(is_string($categories[0])) {
+                    $categories = explode(',', $categories[0]);
+                }
+                
                 foreach($categories as $category_id) {
-                    if($category_id) {
+                    if(!empty($category_id)) {
                         $category_id = filter_var($category_id, FILTER_SANITIZE_NUMBER_INT);
-                        mysqli_query($connection, "INSERT INTO post_categories (post_id, category_id) 
-                                                VALUES ($id, $category_id)");
+                        $cat_query = "INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)";
+                        $cat_stmt = mysqli_prepare($connection, $cat_query);
+                        mysqli_stmt_bind_param($cat_stmt, 'ii', $id, $category_id);
+                        mysqli_stmt_execute($cat_stmt);
                     }
                 }
-
+                
                 $_SESSION['edit-post-success'] = "Post updated successfully";
             } else {
                 $_SESSION['edit-post'] = "Failed to update post";
