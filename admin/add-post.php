@@ -16,26 +16,34 @@ $categories = mysqli_query($connection, $query);
         <!-- Quick Category Creation -->
         <div class="quick-category">
             <input type="text" id="new-category" placeholder="New Category">
-            <button class="btn sm" onclick="addNewCategory()">Add Category</button>
-        </div>
+            <button class="btn" onclick="addNewCategory()">Add Category</button>
+        </div><br />
 
         <form action="<?= ROOT_URL ?>admin/add-post-logic.php" enctype="multipart/form-data" method="POST">
             <input type="text" name="title" placeholder="Title">
             
             <div class="categories-wrapper">
-                <div class="selected-categories" id="selected-categories">
-                    <!-- Selected categories will appear here as tags -->
-                </div>
-                <div class="categories-selector">
-                    <?php while($category = mysqli_fetch_assoc($categories)): ?>
-                        <div class="category-item" data-id="<?= $category['id'] ?>" onclick="toggleCategory(<?= $category['id'] ?>, '<?= $category['title'] ?>')">
-                            <?= $category['title'] ?>
-                        </div>
-                    <?php endwhile ?>
-                </div>
-                <!-- Hidden input to store selected categories -->
-                <input type="hidden" name="categories[]" id="categories-input" value="">
+    <h4>Select Categories</h4>
+    <div class="categories-selector">
+        <?php while($category = mysqli_fetch_assoc($categories)): ?>
+            <div class="category-item" 
+                 data-id="<?= $category['id'] ?>" 
+                 onclick="toggleCategory(<?= $category['id'] ?>, '<?= $category['title'] ?>')"
+                 <?php if(isset($post_categories) && in_array($category['id'], array_column($post_categories, 'id'))): ?>
+                    class="selected"
+                 <?php endif; ?>>
+                <?= $category['title'] ?>
             </div>
+        <?php endwhile ?>
+    </div>
+    <div class="selected-categories" id="selected-categories">
+        <!-- Selected categories will appear here as tags -->
+        <?php if(empty($post_categories)): ?>
+            <em style="color: var(--color-gray-300)">Selected categories will appear here</em>
+        <?php endif ?>
+    </div>
+    <input type="hidden" name="categories[]" id="categories-input" value="">
+</div>
 
             <textarea rows="10" name="body" placeholder="Body"><?= $body ?? '' ?></textarea>
             <div class="form__control">
