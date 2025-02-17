@@ -124,4 +124,15 @@ if(!empty($category_ids)) {
 include 'partials/footer.php';
 
 
+/********* esp32 for iot intergration
+mpu 6050 imu sensor
+electronic speed controller
+brushless dc motors dc
+lipo battery
+gps module 
+
+***********/
+
+
+
 ?>
