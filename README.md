@@ -1,4 +1,4 @@
-# StoryMat3 Blog Platform
+# DEV.Query Blog Platform
 
 A dynamic PHP-based blog platform with user authentication, content management, and responsive design.
 
