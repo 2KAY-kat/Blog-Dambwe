@@ -65,7 +65,10 @@ $user = mysqli_fetch_assoc($result);
                     </div>
                     <div class="form__control">
                         <label for="avatar">Change Avatar</label>
-                        <input type="file" name="avatar" id="avatar">
+                        <div class="avatar-preview">
+                            <img id="avatar-preview" src="<?= ROOT_URL . 'images/' . ($user['avatar'] ?: 'default-avatar.png') ?>" alt="Avatar Preview">
+                        </div>
+                        <input type="file" name="avatar" id="avatar" accept="image/*" onchange="previewImage(this)">
                     </div>
                     <button type="submit" name="submit" class="btn">Update Profile</button>
                 </form>
@@ -73,6 +76,19 @@ $user = mysqli_fetch_assoc($result);
         </main>
    
 </section>
+
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('avatar-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 <?php
 include '../partials/footer-auth.php';

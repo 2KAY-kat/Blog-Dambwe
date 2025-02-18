@@ -54,14 +54,30 @@ $user = mysqli_fetch_assoc($result);
             
             <div class="profile__container">
                 <div class="profile__header">
-                    <div class="profile__image">
-                        <img src="<?= ROOT_URL . 'images/' . $user['avatar'] ?>" alt="Profile Image">
+                    <div class="profile__image-container">
+                        <div class="profile__image">
+                            <img src="<?= ROOT_URL . 'images/' . $user['avatar'] ?>" alt="Profile Image">
+                        </div>
+                        <div class="profile__image-overlay">
+                            <a href="<?= ROOT_URL ?>admin/edit-profile.php" class="btn">
+                                <i class="fas fa-camera"></i> Change Photo
+                            </a>
+                        </div>
                     </div>
                     <div class="profile__info">
                         <h2><?= "{$user['firstname']} {$user['lastname']}" ?></h2>
                         <p class="profile__role"><?= $user['is_admin'] ? 'Administrator' : 'Author' ?></p>
+                        <div class="profile__stats">
+                            <?php
+                                // Get post count
+                                $posts_query = "SELECT COUNT(*) as post_count FROM posts WHERE author_id = $current_user_id";
+                                $posts_result = mysqli_query($connection, $posts_query);
+                                $post_count = mysqli_fetch_assoc($posts_result)['post_count'];
+                            ?>
+                            <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span>
+                            <span><i class="fas fa-calendar"></i> Joined <?= date("M Y", strtotime($user['date_time'])) ?></span>
+                        </div>
                     </div>
-                    <a href="<?= ROOT_URL ?>admin/edit-profile.php" class="btn">Edit Profile</a>
                 </div>
 
                 <div class="profile__content">
