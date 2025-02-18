@@ -53,10 +53,10 @@ $user = mysqli_fetch_assoc($result);
             <?php endif ?>
             
             <div class="profile__container">
-                <div class="profile__header">
+                <div class="profile__cover" style="background-image: url('<?= ROOT_URL . 'images/' . ($user['cover_photo'] ?? 'default-cover.jpg') ?>');">
                     <div class="profile__image-container">
                         <div class="profile__image">
-                            <img src="<?= ROOT_URL . 'images/' . $user['avatar'] ?>" alt="Profile Image">
+                            <img src="<?= ROOT_URL . 'images/' . ($user['avatar'] ?? 'default-avatar.png') ?>" alt="Profile Image">
                         </div>
                         <div class="profile__image-overlay">
                             <a href="<?= ROOT_URL ?>admin/edit-profile.php" class="btn">
@@ -64,22 +64,21 @@ $user = mysqli_fetch_assoc($result);
                             </a>
                         </div>
                     </div>
-                    <div class="profile__info">
-                        <h2><?= "{$user['firstname']} {$user['lastname']}" ?></h2>
-                        <p class="profile__role"><?= $user['is_admin'] ? 'Administrator' : 'Author' ?></p>
-                        <div class="profile__stats">
-                            <?php
-                                // Get post count
-                                $posts_query = "SELECT COUNT(*) as post_count FROM posts WHERE author_id = $current_user_id";
-                                $posts_result = mysqli_query($connection, $posts_query);
-                                $post_count = mysqli_fetch_assoc($posts_result)['post_count'];
-                            ?>
-                            <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span>
-                            <span><i class="fas fa-calendar"></i> Joined <?= date("M Y", strtotime($user['date_time'])) ?></span>
-                        </div>
+                </div>
+                <div class="profile__info">
+                    <h2><?= "{$user['firstname']} {$user['lastname']}" ?></h2>
+                    <p class="profile__role"><?= $user['is_admin'] ? 'Administrator' : 'Author' ?></p>
+                    <div class="profile__stats">
+                        <?php
+                            // Get post count
+                            $posts_query = "SELECT COUNT(*) as post_count FROM posts WHERE author_id = $current_user_id";
+                            $posts_result = mysqli_query($connection, $posts_query);
+                            $post_count = mysqli_fetch_assoc($posts_result)['post_count'];
+                        ?>
+                        <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span>
+                        <span><i class="fas fa-calendar"></i> Joined <?= date("M Y", strtotime($user['date_time'])) ?></span>
                     </div>
                 </div>
-
                 <div class="profile__content">
                     <h3>Bio</h3>
                     <p><?= $user['bio'] ?? 'No bio available' ?></p>

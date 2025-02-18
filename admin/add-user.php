@@ -51,13 +51,32 @@ unset($_SESSION['add-user-data']);
 
             <div class="form__control">
                 <label for="avatar">Add Avatar</label>
-                <input type="file" name="avatar" id="avatar">
+                <div class="avatar-preview">
+                    <img id="avatar-preview" src="<?= ROOT_URL ?>images/default-avatar.png" alt="Avatar Preview">
+                </div>
+                <input type="file" name="avatar" id="avatar" accept="image/*" onchange="previewImage(this)">
+                <small>You can leave this blank and update it later in your profile settings.</small>
             </div>
 
             <button class="btn" name="submit" type="submit">Add User</button>
         </form>
     </div>
 </section>
+
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('avatar-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.src = "<?= ROOT_URL ?>images/default-avatar.png";
+    }
+}
+</script>
 
 <?php
 include '../partials/footer-auth.php';

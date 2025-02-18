@@ -70,6 +70,13 @@ $user = mysqli_fetch_assoc($result);
                         </div>
                         <input type="file" name="avatar" id="avatar" accept="image/*" onchange="previewImage(this)">
                     </div>
+                    <div class="form__control">
+                        <label for="cover_photo">Change Cover Photo</label>
+                        <input type="file" name="cover_photo" id="cover_photo" accept="image/*" onchange="previewCoverImage(this)">
+                        <div class="cover-preview">
+                            <img id="cover-preview" src="<?= ROOT_URL . 'images/' . ($user['cover_photo'] ?: 'default-cover.jpg') ?>" alt="Cover Preview">
+                        </div>
+                    </div>
                     <button type="submit" name="submit" class="btn">Update Profile</button>
                 </form>
             </div>
@@ -80,6 +87,17 @@ $user = mysqli_fetch_assoc($result);
 <script>
 function previewImage(input) {
     const preview = document.getElementById('avatar-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function previewCoverImage(input) {
+    const preview = document.getElementById('cover-preview');
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
