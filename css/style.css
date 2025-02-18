@@ -510,10 +510,9 @@ footer ul .colored {
 }
 .footer__copyrightt {
     text-align: center;
+    
     padding: 1.5rem 0;
     margin-top: 4rem;
-    position: absolute;
-    margin-bottom: 0;
 }
 
 
