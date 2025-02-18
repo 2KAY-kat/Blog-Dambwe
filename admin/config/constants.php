@@ -1,5 +1,8 @@
 <?php
 session_start();
+
+define('ROOT_PATH', dirname(__DIR__));
+
 define('ROOT_URL', 'http://localhost/Blog-Dambwe/');
 define('DB_HOST', 'localhost');
 define('DB_USER', 'dambwedb');

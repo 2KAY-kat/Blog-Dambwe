@@ -1,5 +1,5 @@
 <?php
-require '../config/database.php';
+require_once __DIR__ . '/../../config/database.php';
 
 if(!isset($_SESSION['user-id'])) {
     header('location: ' . ROOT_URL . 'signin.php');
@@ -51,3 +51,11 @@ $_SESSION['user_is_admin'] = $current_user['is_admin'];
 
         </div>
     </nav>
+
+    <?php 
+    if (!strpos($_SERVER['REQUEST_URI'], 'signin.php') && 
+        !strpos($_SERVER['REQUEST_URI'], 'signup.php')) {
+        // Use filesystem path for file inclusion
+        require_once __DIR__ . '/../../includes/breadcrumbs.php';
+    }
+    ?>

@@ -1,5 +1,6 @@
 <?php
-require 'config/database.php';
+// Use filesystem path for includes
+require_once __DIR__ . '/../config/database.php';
 
 
 // current user in db
@@ -64,6 +65,11 @@ if(isset($_SESSION['user-id'])) {
 
         </div>
     </nav>
-
-
+    <?php 
+    if (!strpos($_SERVER['REQUEST_URI'], 'signin.php') && 
+        !strpos($_SERVER['REQUEST_URI'], 'signup.php')) {
+        // Use filesystem path for file inclusion
+        require_once __DIR__ . '/../includes/breadcrumbs.php';
+    }
+    ?>
 <!---  end nav   -->
