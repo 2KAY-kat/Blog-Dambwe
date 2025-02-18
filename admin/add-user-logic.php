@@ -25,8 +25,6 @@ if(isset($_POST['submit'])) {
         $_SESSION['add-user'] = "Please Enter a valid Email";
     } elseif (strlen($createpassword) < 8 || strlen($confirmpassword) < 8) {
         $_SESSION['add-user'] = "Password Should be more than 8 characters";
-    } elseif (!$avatar['name']) {
-        $_SESSION['add-user'] = "Please Select an Image";
     } else {
         // matchbility of password
 
@@ -45,33 +43,32 @@ if(isset($_POST['submit'])) {
                 $_SESSION['add-user'] = "Username or Email already taken";
             } else {
                 // process avatar/image 
-                // rename the avatar
-
-                $time = time(); // make every avatar unique using time stamps
-
-                $avatar_name = $time . $avatar['name'];
-                $avatar_tmp_name = $avatar['tmp_name'];
-                $avatar_destination_path = '../images/' . $avatar_name;
-
-                // make sure file is an image 
-
-                $allowed_files = ['png', 'jpg', 'jpeg'];
-                $extention = explode('.', $avatar_name);
-                $extention = end($extention);
-                if(in_array($extention, $allowed_files)) {
-                    // maintainin a small sized image (1mb+)
-                    if($avatar['size'] < 2000000) {
-                        //upload norma size 
-                        move_uploaded_file($avatar_tmp_name, $avatar_destination_path);
-                    } else {
-                        $_SESSION['add-user'] = 'The Image is too large should be less than 1mb';
-                    }
+                // If no avatar is uploaded, use default
+                if(empty($avatar['name'])) {
+                    $avatar_name = 'default-avatar.png';
                 } else {
-                    $_SESSION['add-user'] = "File Should be png, jpg or jpeg";
+                    $time = time();
+                    $avatar_name = $time . $avatar['name'];
+                    $avatar_tmp_name = $avatar['tmp_name'];
+                    $avatar_destination_path = '../images/' . $avatar_name;
+
+                    // Make sure file is image
+                    $allowed_files = ['png', 'jpg', 'jpeg'];
+                    $extension = explode('.', $avatar_name);
+                    $extension = end($extension);
+                    if(in_array($extension, $allowed_files)) {
+                        // Make sure image is not too large (2MB+)
+                        if($avatar['size'] < 2000000) {
+                            // Upload avatar
+                            move_uploaded_file($avatar_tmp_name, $avatar_destination_path);
+                        } else {
+                            $_SESSION['add-user'] = "File size too big. Should be less than 2mb";
+                        }
+                    } else {
+                        $_SESSION['add-user'] = "File should be png, jpg, or jpeg";
+                    }
                 }
-
             }
-
         }
     }
 

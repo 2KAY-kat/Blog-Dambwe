@@ -39,7 +39,7 @@ if(isset($_SESSION['user-id'])) {
                 <?php if(isset($_SESSION['user-id'])) : ?>
                     <li class="nav__profile">
                     <div class="avatar">
-                    <img src="<?= ROOT_URL . 'images/' . $avatar['avatar'] ?>">
+                        <img src="<?= ROOT_URL . 'images/' . ($avatar['avatar'] ?: 'default-avatar.png') ?>">
                     </div>
                     <ul>
                         <?php if(strpos($_SERVER['PHP_SELF'], '/admin/') !== false): ?>

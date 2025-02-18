@@ -58,3 +58,7 @@ unset($_SESSION['add-user-data']);
         </form>
     </div>
 </section>
+
+<?php
+include '../partials/footer-auth.php';
+?>

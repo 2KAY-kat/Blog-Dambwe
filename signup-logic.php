@@ -25,28 +25,25 @@ if(isset($_POST['submit'])) {
         $_SESSION['signup'] = "Please Enter Your a valid Email";
     } elseif (strlen($createpassword) < 8 || strlen($confirmpassword) < 8) {
         $_SESSION['signup'] = "Password Should be more than 8 characters";
-    } elseif (!$avatar['name']) {
-        $_SESSION['signup'] = "Please Select an Image";
+    } elseif ($createpassword !== $confirmpassword) {
+        $_SESSION['signup'] = "Password do not match";
     } else {
-        // matchbility of password
+        // hash password
 
-        if($createpassword !== $confirmpassword) {
-            $_SESSION['signup'] = "Password do not match";
+        $hashed_password = password_hash($createpassword, PASSWORD_DEFAULT);
+
+        // user or email existance in db
+
+        $user_check_query = "SELECT * FROM users WHERE username='$username' OR email='$email'";
+        $user_check_result = mysqli_query($connection, $user_check_query);
+        if(mysqli_num_rows($user_check_result) > 0) {
+            $_SESSION['signup'] = "Username or Email already taken";
         } else {
-            // hash password
-
-            $hashed_password = password_hash($createpassword, PASSWORD_DEFAULT);
-
-            // user or email existance in db
-
-            $user_check_query = "SELECT * FROM users WHERE username='$username' OR email='$email'";
-            $user_check_result = mysqli_query($connection, $user_check_query);
-            if(mysqli_num_rows($user_check_result) > 0) {
-                $_SESSION['signup'] = "Username or Email already taken";
+            // process avatar/image 
+            // If no avatar is uploaded, use default
+            if (empty($avatar['name'])) {
+                $avatar_name = 'default-avatar.png';
             } else {
-                // process avatar/image 
-                // rename the avatar
-
                 $time = time(); // make every avatar unique using time stamps
 
                 $avatar_name = $time . $avatar['name'];
@@ -59,19 +56,17 @@ if(isset($_POST['submit'])) {
                 $extention = explode('.', $avatar_name);
                 $extention = end($extention);
                 if(in_array($extention, $allowed_files)) {
-                    // maintainin a small sized image (imb+)
-                    if($avatar['size'] < 1000000) {
+                    // maintainin a small sized image (2mb+)
+                    if($avatar['size'] < 2000000) {
                         //upload norma size 
                         move_uploaded_file($avatar_tmp_name, $avatar_destination_path);
                     } else {
-                        $_SESSION['signup'] = 'The Image is too large should be less than 1mb';
+                        $_SESSION['signup'] = 'The Image is too large should be less than 2mb';
                     }
                 } else {
                     $_SESSION['signup'] = "File Should be png, jpg or jpeg";
                 }
-
             }
-
         }
     }
 
