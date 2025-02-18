@@ -80,3 +80,7 @@ $user = mysqli_fetch_assoc($result);
         </main>
     </div>
 </section>
+
+<?php
+include '../partials/footer-auth.php';
+?>

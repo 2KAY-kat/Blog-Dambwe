@@ -100,6 +100,7 @@ $categories = mysqli_query($connection, $query);
                 <?php endif  ?>
             </ul>
         </aside>
+        
         <main>
             <h2>Manage Categories</h2>
 

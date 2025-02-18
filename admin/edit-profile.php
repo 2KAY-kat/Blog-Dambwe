@@ -40,7 +40,6 @@ $user = mysqli_fetch_assoc($result);
         </aside>
 
         <main>
-            <div class="form__section-container">
                 <h2>Edit Profile</h2>
                 <?php if(isset($_SESSION['edit-profile'])) : ?>
                     <div class="alert__message error">
@@ -72,7 +71,7 @@ $user = mysqli_fetch_assoc($result);
                 </form>
             </div>
         </main>
-    </div>
+   
 </section>
 
 <?php

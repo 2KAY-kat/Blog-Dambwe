@@ -44,12 +44,10 @@ $_SESSION['user_is_admin'] = $current_user['is_admin'];
                         <li><a href="<?= ROOT_URL ?>logout.php">Logout</a></li>
                         <?php endif; ?>
                     </ul>
-                    <button id="open__nav-btn"><i class="fas fa-bars"></i></button>
-                    <button id="close__nav-btn"><i class="fas fa-times"></i></button>
-
                 </li>
             </ul>
+            <button id="open__nav-btn"><i class="fas fa-bars"></i></button>
+            <button id="close__nav-btn"><i class="fas fa-times"></i></button>
+
         </div>
     </nav>
-</body>
-</html>

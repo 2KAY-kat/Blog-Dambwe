@@ -1064,6 +1064,19 @@ input, textarea, select {
         font-size: 0.8rem;
     }
 
+    .nav__items li .signin-btn {
+        color: var(--color-primary-light);
+        background-color: var(--color-primary);
+        transition: var(--transition);
+    }
+
+    .nav__items li .signin-btn:hover {
+        border-radius: 0px;
+    }
+
+    .nav__items li .sign-up-btn:hover {
+        border-radius: 0px;
+    }
 /***************   nav  ***************/
 
 

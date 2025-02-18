@@ -6,7 +6,6 @@ $categories = mysqli_query($connection, $query);
 
 <section class="dashboard">
     <main>
-        <section class="form__section">
             <div class="container form__section-container">
                 <h2>Add Post</h2>
                 <?php if (isset($_SESSION['add-post'])) : ?>
@@ -61,7 +60,7 @@ $categories = mysqli_query($connection, $query);
 
                 </form>
             </div>
-        </section>
+     
 
     </main>
 </section>
