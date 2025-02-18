@@ -131,3 +131,7 @@ $categories = mysqli_query($connection, $query);
         </main>
     </div>
 </section>
+
+<?php
+include '../partials/footer-auth.php';
+?>

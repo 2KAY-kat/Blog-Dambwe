@@ -29,18 +29,24 @@ $_SESSION['user_is_admin'] = $current_user['is_admin'];
         <div class="container nav__container">
         <a href="<?= ROOT_URL ?>" class="nav__logo"><img src="<?= ROOT_URL ?>partials/favicon.ico" alt=""></a>
             <ul class="nav__items">
-            <li><a href="<?= ROOT_URL ?>blog.php">Blog</a></li>
+                <li><a href="<?= ROOT_URL ?>blog.php">Blog</a></li>
                 <li><a href="<?= ROOT_URL ?>about.php">About</a></li>
                 <li><a href="<?= ROOT_URL ?>services.php">Services</a></li>
                 <li><a href="<?= ROOT_URL ?>contact.php">Contact</a></li>
+                <?php if(isset($_SESSION['user-id'])) : ?>
                 <li class="nav__profile">
                     <div class="avatar">
                         <img src="<?= ROOT_URL . 'images/' . $current_user['avatar'] ?>">
                     </div>
                     <ul>
                         <li><a href="<?= ROOT_URL ?>admin/index.php">Dashboard</a></li>
+                        <li><a href="<?= ROOT_URL ?>admin/profile.php">View Profile</a></li>
                         <li><a href="<?= ROOT_URL ?>logout.php">Logout</a></li>
+                        <?php endif; ?>
                     </ul>
+                    <button id="open__nav-btn"><i class="fas fa-bars"></i></button>
+                    <button id="close__nav-btn"><i class="fas fa-times"></i></button>
+
                 </li>
             </ul>
         </div>

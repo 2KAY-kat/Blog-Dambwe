@@ -137,5 +137,5 @@ $users = mysqli_query($connection, $query);
 
 
 <?php
-include '../partials/footer.php';
+include '../partials/footer-auth.php';
 ?>

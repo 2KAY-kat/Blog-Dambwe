@@ -19,7 +19,6 @@ if (!$posts) {
 
 ?>
 
-<section class="dashboard">
 
 <?php if(isset($_SESSION['add-post-success'])) : //Post adding was successful ?>
         <div class="alert__message success container">
@@ -55,12 +54,12 @@ if (!$posts) {
             </p>
         </div>
 <?php endif ?> 
-
+<section class="dashboard">
     <div class="container dashboard__container">
 
 
         <button id="show__sidebar-btn" class="sidebar__toggle"><i class="fas fa-chevron-right"></i></button>
-        <button id="hide__sidebar-btn"class="sidebar__toggle"><i class="fas fa-chevron-left"></i></button>
+        <button id="hide__sidebar-btn" class="sidebar__toggle"><i class="fas fa-chevron-left"></i></button>
 
         <aside>
             <ul>
@@ -135,3 +134,8 @@ if (!$posts) {
         </main>
     </div>
 </section>
+
+
+<?php
+include '../partials/footer-auth.php';
+?>

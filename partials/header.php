@@ -30,8 +30,6 @@ if(isset($_SESSION['user-id'])) {
     <nav>
         <div class="container nav__container">
             <a href="<?= ROOT_URL ?>" class="nav__logo"><img src="<?= ROOT_URL ?>partials/favicon.ico" alt=""></a>
-
-           <?php /* <a href="<?= ROOT_URL ?>" class="nav__logo"><img src="<?= ROOT_URL ?>web-assets/storymat3_logo_&-icon-pack_20240926_133835_0000.png" alt=""></a> */?>
             <ul class="nav__items">
                 <li><a href="<?= ROOT_URL ?>blog.php">Blog</a></li>
                 <li><a href="<?= ROOT_URL ?>about.php">About</a></li>

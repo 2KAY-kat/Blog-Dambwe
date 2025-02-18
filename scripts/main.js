@@ -18,9 +18,6 @@ const navClose = () => {
 navOpenBtn.addEventListener('click', navOpen);
 navCloseBtn.addEventListener('click', navClose);
 
-
-
-
 const sidebar = document.querySelector('aside');
 const showSidebarBtn = document.querySelector('#show__sidebar-btn');
 const hideSidebarBtn = document.querySelector('#hide__sidebar-btn');
