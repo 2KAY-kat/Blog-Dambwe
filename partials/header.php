@@ -26,6 +26,12 @@ if(isset($_SESSION['user-id'])) {
     <title>DEV.Query | HOME</title>
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>css/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.css">
+    <!-- ICONSCOUT CDN -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- GOOGLE FONT (MONTSERRAT) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="<?= ROOT_URL ?>css/interactions.css">
 </head>
 <body>
     <nav>

@@ -118,7 +118,24 @@ if(!empty($category_ids)) {
 
 <!------------ end single post  ----------------------->
 
+<section class="comments">
+    <div class="container comments__container">
+        <h3>Comments</h3>
+        <?php if (isset($_SESSION['user-id'])) : ?>
+            <form id="comment-form">
+                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                <textarea name="comment" rows="4" placeholder="Add a comment"></textarea>
+                <button type="submit" class="btn">Post Comment</button>
+            </form>
+        <?php else : ?>
+            <p>You must be logged in to post a comment. <a href="<?= ROOT_URL ?>signin.php">Login</a></p>
+        <?php endif; ?>
 
+        <div id="comments-section">
+            <!-- Comments will be loaded here via AJAX -->
+        </div>
+    </div>
+</section>
 
 <?php
 include 'partials/footer.php';

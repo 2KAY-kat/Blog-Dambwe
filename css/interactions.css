@@ -1,0 +1,63 @@
+.post__interactions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.post__interactions a {
+    color: var(--color-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.like-btn, .dislike-btn {
+    cursor: pointer;
+    color: var(--color-primary);
+}
+
+.like-btn.active,
+.dislike-btn.active {
+    color: green; /* Or any other color to indicate active state */
+}
+
+.comments__container {
+    margin-top: 2rem;
+}
+
+#comment-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment {
+    border: 1px solid var(--color-gray-light);
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.comment__author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment__author img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}
+
+.comment__actions {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.comment__actions span {
+    cursor: pointer;
+    color: var(--color-primary);
+}

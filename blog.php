@@ -4,7 +4,11 @@ require 'helpers/format_time.php';
 
 // retrive the posts from db all of them
 
-$query = "SELECT * FROM posts ORDER BY date_time DESC";
+$query = "SELECT *,
+            (SELECT like_value FROM likes_dislikes 
+             WHERE post_id = posts.id AND user_id = " . (isset($_SESSION['user-id']) ? $_SESSION['user-id'] : 0) . ") AS user_like_value,
+            (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS comment_count
+          FROM posts ORDER BY date_time DESC";
 $posts = mysqli_query($connection, $query);
 
 ?>
@@ -77,6 +81,15 @@ $posts = mysqli_query($connection, $query);
                                 <?= timeAgo($post['date_time']) ?>
                             </small>
                         </div>
+                    </div>
+                    <!-- Like/Dislike Buttons -->
+                    <div class="post__interactions">
+                        <span class="like-btn" data-post-id="<?= $post['id'] ?>" data-action="like">
+                            <i class="fa fa-thumbs-up"></i> <span id="like-count-<?= $post['id'] ?>">0</span>
+                        </span>
+                        <span class="dislike-btn" data-post-id="<?= $post['id'] ?>" data-action="dislike">
+                            <i class="fa fa-thumbs-down"></i> <span id="dislike-count-<?= $post['id'] ?>">0</span>
+                        </span>
                     </div>
                 </div>
             </article>
