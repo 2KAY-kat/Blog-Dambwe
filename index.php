@@ -35,11 +35,11 @@ $posts = mysqli_query($connection, $query);
 
                     if ($category_result && mysqli_num_rows($category_result) > 0) {
                         while ($category = mysqli_fetch_assoc($category_result)) {
-                            ?>
+                    ?>
                             <a href="<?= ROOT_URL ?>category.php?id=<?= $category['id'] ?>" class="category__button">
                                 <?= $category['title'] ?>
                             </a>
-                            <?php
+                    <?php
                         }
                     } else {
                         echo "<p>No category assigned</p>";
@@ -93,9 +93,9 @@ $posts = mysqli_query($connection, $query);
                     $category_result = mysqli_query($connection, $category_query);
                     ?>
                     <div class="post__categories">
-                        <?php while($category = mysqli_fetch_assoc($category_result)): ?>
-                            <a href="<?= ROOT_URL ?>category-posts.php?id=<?= $category['id'] ?>" 
-                               class="category__button"><?= $category['title'] ?></a>
+                        <?php while ($category = mysqli_fetch_assoc($category_result)): ?>
+                            <a href="<?= ROOT_URL ?>category-posts.php?id=<?= $category['id'] ?>"
+                                class="category__button"><?= $category['title'] ?></a>
                         <?php endwhile ?>
                     </div>
                     <h3 class="post__title">
@@ -115,7 +115,7 @@ $posts = mysqli_query($connection, $query);
                         $author_result = mysqli_query($connection, $author_query);
                         $author = mysqli_fetch_assoc($author_result);
                         ?>
-                        
+
                         <div class="post__author-avatar">
                             <a href="<?= ROOT_URL ?>author-posts.php?id=<?= $author['id'] ?>" title="View Posts">
                                 <img src="images/<?= $author['avatar'] ?>">
@@ -126,7 +126,7 @@ $posts = mysqli_query($connection, $query);
                                 <a href="<?= ROOT_URL ?>author-posts.php?id=<?= $author['id'] ?>">
                                     By: <?= "{$author['firstname']} {$author['lastname']}" ?>
                                 </a>
-                                <?php if(isset($_SESSION['user-id']) && $_SESSION['user-id'] == $author['id']): ?>
+                                <?php if (isset($_SESSION['user-id']) && $_SESSION['user-id'] == $author['id']): ?>
                                     <small><a href="<?= ROOT_URL ?>admin/profile.php">(View Profile)</a></small>
                                 <?php endif; ?>
                             </h5>
@@ -136,17 +136,17 @@ $posts = mysqli_query($connection, $query);
                         </div>
                     </div>
                     <?php
-                        $like_count_query = "SELECT COUNT(*) AS likes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = 1";
-                        $like_count_result = mysqli_query($connection, $like_count_query);
-                        $like_count_data = mysqli_fetch_assoc($like_count_result);
-                        $likes_count = $like_count_data['likes'];
+                    $like_count_query = "SELECT COUNT(*) AS likes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = 1";
+                    $like_count_result = mysqli_query($connection, $like_count_query);
+                    $like_count_data = mysqli_fetch_assoc($like_count_result);
+                    $likes_count = $like_count_data['likes'];
 
-                        $dislike_count_query = "SELECT COUNT(*) AS dislikes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = -1";
-                        $dislike_count_result = mysqli_query($connection, $dislike_count_query);
-                        $dislike_count_data = mysqli_fetch_assoc($dislike_count_result);
-                        $dislikes_count = $dislike_count_data['dislikes'];
+                    $dislike_count_query = "SELECT COUNT(*) AS dislikes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = -1";
+                    $dislike_count_result = mysqli_query($connection, $dislike_count_query);
+                    $dislike_count_data = mysqli_fetch_assoc($dislike_count_result);
+                    $dislikes_count = $dislike_count_data['dislikes'];
 
-                        $user_like_value = $post['user_like_value'];
+                    $user_like_value = $post['user_like_value'];
                     ?>
                     <div class="post__interactions">
                         <span class="like-btn <?= ($user_like_value == 1) ? 'active' : '' ?>" data-post-id="<?= $post['id'] ?>" data-action="like">
