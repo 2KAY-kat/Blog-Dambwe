@@ -20,7 +20,7 @@ $categories_query = "SELECT * FROM categories ORDER BY title";
 $categories = mysqli_query($connection, $categories_query);
 ?>
 
-<section class="form__section">
+<section class="dashboard">
     <div class="container form__section-container">
         <h2>Edit Post</h2>
         <?php if (isset($_SESSION['edit-post'])) : ?>
@@ -85,6 +85,10 @@ $categories = mysqli_query($connection, $categories_query);
         </form>
     </div>
 </section>
+
+<?php
+include '../partials/footer-auth.php';
+?>
 
 <script>
 let selectedCategories = [];
