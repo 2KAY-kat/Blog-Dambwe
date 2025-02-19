@@ -82,14 +82,29 @@ $posts = mysqli_query($connection, $query);
                             </small>
                         </div>
                     </div>
-                    <!-- Like/Dislike Buttons -->
+                    <?php
+                    $like_count_query = "SELECT COUNT(*) AS likes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = 1";
+                    $like_count_result = mysqli_query($connection, $like_count_query);
+                    $like_count_data = mysqli_fetch_assoc($like_count_result);
+                    $likes_count = $like_count_data['likes'];
+
+                    $dislike_count_query = "SELECT COUNT(*) AS dislikes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = -1";
+                    $dislike_count_result = mysqli_query($connection, $dislike_count_query);
+                    $dislike_count_data = mysqli_fetch_assoc($dislike_count_result);
+                    $dislikes_count = $dislike_count_data['dislikes'];
+
+                    $user_like_value = $post['user_like_value'];
+                    ?>
                     <div class="post__interactions">
-                        <span class="like-btn" data-post-id="<?= $post['id'] ?>" data-action="like">
-                            <i class="fa fa-thumbs-up"></i> <span id="like-count-<?= $post['id'] ?>">0</span>
+                        <span class="like-btn <?= ($user_like_value == 1) ? 'active' : '' ?>" data-post-id="<?= $post['id'] ?>" data-action="like">
+                            <i class="fa fa-thumbs-up"></i> <span id="like-count-<?= $post['id'] ?>"><?= $likes_count ?></span>
                         </span>
-                        <span class="dislike-btn" data-post-id="<?= $post['id'] ?>" data-action="dislike">
-                            <i class="fa fa-thumbs-down"></i> <span id="dislike-count-<?= $post['id'] ?>">0</span>
+                        <span class="dislike-btn <?= ($user_like_value == -1) ? 'active' : '' ?>" data-post-id="<?= $post['id'] ?>" data-action="dislike">
+                            <i class="fa fa-thumbs-down"></i> <span id="dislike-count-<?= $post['id'] ?>"><?= $dislikes_count ?></span>
                         </span>
+                        <a href="<?= ROOT_URL ?>post.php?id=<?= $post['id'] ?>#comments-section">
+                            <i class="fa fa-comment"></i> <span><?= $post['comment_count'] ?></span>
+                        </a>
                     </div>
                 </div>
             </article>
