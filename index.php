@@ -13,62 +13,56 @@ $posts = mysqli_query($connection, $query);
 ?>
 
 <!--    Retrive the is_featured post --->
-<?php if (mysqli_num_rows($featured_result) == 1) : ?>
+<?php if ($featured && mysqli_num_rows($featured_result) == 1) : ?>
     <section class="featured">
-        <div class="container posts featured__container">
-            <div class="post__thumbnail">
-                <img src="images/<?= $featured['thumbnail'] ?>" alt="all_about-books">
-            </div>
-            <div class="post__info">
-                <?php
-                // get categories from db 
-                $post_id = $featured['id'];
-                $category_query = "SELECT c.* FROM categories c 
-                                 JOIN post_categories pc ON c.id = pc.category_id 
-                                 WHERE pc.post_id = $post_id";
-                $category_result = mysqli_query($connection, $category_query);
-                ?>
-                <div class="post__categories">
-                    <?php while($category = mysqli_fetch_assoc($category_result)): ?>
-                        <a href="<?= ROOT_URL ?>category-posts.php?id=<?= $category['id'] ?>" 
-                           class="category__button"><?= $category['title'] ?></a>
-                    <?php endwhile ?>
-                </div>
-                <h2 class="post__title"><a href="<?= ROOT_URL ?>post.php?id=<?= $featured['id'] ?>"><?= $featured['title'] ?></a></h2>
-
-                <div class="post__author">
+        <div class="container featured__container" style="background-image: url('<?= ROOT_URL ?>images/<?= $featured['thumbnail'] ?>');">
+            <div class="featured__post">
+                <div class="featured__post-content">
+                    <h2 class="post__title">
+                        <a href="<?= ROOT_URL ?>post.php?id=<?= $featured['id'] ?>"><?= $featured['title'] ?></a>
+                    </h2>
                     <?php
-                    // fetch author name, avatar
-
-                    $author_id = $featured['author_id'];
-                    $author_query = "SELECT * FROM users WHERE id=$author_id";
-                    $author_result = mysqli_query($connection, $author_query);
-                    $author = mysqli_fetch_assoc($author_result);
-
-                    ?>
-                    <div class="post__author-avatar">
-                        <a href="<?= ROOT_URL ?>author-posts.php?id=<?= $author['id'] ?>" title="View Posts">
-                            <img src="images/<?= $author['avatar'] ?>">
-                        </a>
-                    </div>
-                    <div class="post_author-info">
-                        <h5> <a href="<?= ROOT_URL ?>author-posts.php?id=<?= $author['id'] ?>">
-                                By: <?= "{$author['firstname']} {$author['lastname']}" ?>
+                    // get categories from db 
+                    $post_id = $featured['id'];
+                    $category_query = "SELECT c.* FROM categories c 
+                                     JOIN post_categories pc ON c.id = pc.category_id 
+                                     WHERE pc.post_id = $post_id";
+                    $category_result = mysqli_query($connection, $category_query);
+                    
+                    if ($category_result && mysqli_num_rows($category_result) > 0) {
+                        while ($category = mysqli_fetch_assoc($category_result)) {
+                            ?>
+                            <a href="<?= ROOT_URL ?>category.php?id=<?= $category['id'] ?>" class="category__button">
+                                <?= $category['title'] ?>
                             </a>
-                            <?php if(isset($_SESSION['user-id']) && $_SESSION['user-id'] == $author['id']): ?>
-                                <small><a href="<?= ROOT_URL ?>admin/profile.php">(View Profile)</a></small>
-                            <?php endif; ?>
-                        </h5>
-                        <small title="<?= date("M d, Y - H:i", strtotime($featured['date_time'])) ?>">
-                            <?= timeAgo($featured['date_time']) ?>
-                        </small>
+                            <?php
+                        }
+                    } else {
+                        echo "<p>No category assigned</p>";
+                    }
+                    ?>
+                    <p class="post__body">
+                        <?= substr($featured['body'], 0, 300) ?>...
+                    </p>
+                    <div class="post__author">
+                        <?php
+                        //fetch author from users table
+                        $author_id = $featured['author_id'];
+                        $author_query = "SELECT * FROM users WHERE id=$author_id";
+                        $author_result = mysqli_query($connection, $author_query);
+                        $author = mysqli_fetch_assoc($author_result);
+                        ?>
+                        <div class="post__author-avatar">
+                            <img src="<?= ROOT_URL ?>images/<?= $author['avatar'] ?>" alt="">
+                        </div>
+                        <div class="post__author-info">
+                            <h5>By: <?= "{$author['firstname']} {$author['lastname']}" ?></h5>
+                            <small>
+                                <?= date("M d, Y - H:i", strtotime($featured['date_time'])) ?>
+                            </small>
+                        </div>
                     </div>
                 </div>
-
-                <p class="post__body">
-                    <?= substr($featured['body'], 0, 300) ?>...
-                </p>
-
             </div>
         </div>
     </section>
