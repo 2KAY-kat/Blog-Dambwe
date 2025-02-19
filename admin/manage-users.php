@@ -107,6 +107,7 @@ $users = mysqli_query($connection, $query);
             <table>
                 <thead>
                     <tr>
+                        <th>Avatar</th>
                         <th>Name</th>
                         <th>Username</th>
                         <th>Edit</th>
@@ -117,11 +118,15 @@ $users = mysqli_query($connection, $query);
                 <tbody>
                     <?php while($user = mysqli_fetch_assoc($users)) : ?>
                     <tr>
+                        <td>
+                            <div class="avatar">
+                                <img src="<?= ROOT_URL . 'images/' . $user['avatar'] ?>" alt="<?= "{$user['firstname']} {$user['lastname']}'s avatar" ?>">
+                            </div>
+                        </td>
                         <td><?= "{$user['firstname']} {$user['lastname']}" ?></td>
                         <td><?= $user['username'] ?></td>
-<td><a href="<?= ROOT_URL ?>admin/edit-user.php?id=<?= $user['id'] ?>" class="btn sm">Edit</a></td>
-
-<td><a href="<?= ROOT_URL ?>admin/delete-user.php?id=<?= $user['id'] ?>" class="btn sm danger">Delete</a></td>
+                        <td><a href="<?= ROOT_URL ?>admin/edit-user.php?id=<?= $user['id'] ?>" class="btn sm">Edit</a></td>
+                        <td><a href="<?= ROOT_URL ?>admin/delete-user.php?id=<?= $user['id'] ?>" class="btn sm danger">Delete</a></td>
                         <td><?= $user['is_admin'] ? 'YES' : 'NO' ?></td>
                     </tr>
                  <?php endwhile ?>
