@@ -45,20 +45,29 @@ $categories = mysqli_query($connection, $categories_query);
                 <h4>Select Categories</h4>
                 <div class="categories-selector">
                     <?php while ($category = mysqli_fetch_assoc($categories)): ?>
-                        <div class="category-item"
+                        <div class="category-item <?php if (in_array($category['id'], $post_category_ids)) echo 'selected'; ?>"
                             data-id="<?= $category['id'] ?>"
-                            onclick="toggleCategory(<?= $category['id'] ?>, '<?= htmlspecialchars($category['title'], ENT_QUOTES) ?>')"
-                            <?php if (isset($post_categories) && in_array($category['id'], array_column($post_categories, 'id'))): ?>
-                            class="selected"
-                            <?php endif; ?>>
+                            onclick="toggleCategory(<?= $category['id'] ?>, '<?= htmlspecialchars($category['title'], ENT_QUOTES) ?>')">
                             <?= htmlspecialchars($category['title']) ?>
                         </div>
                     <?php endwhile ?>
                 </div>
                 <div class="selected-categories" id="selected-categories">
+                    <?php
+                    // Display selected categories
+                    foreach ($post_category_ids as $catId) {
+                        $catQuery = "SELECT title FROM categories WHERE id = $catId";
+                        $catResult = mysqli_query($connection, $catQuery);
+                        if ($catResult && mysqli_num_rows($catResult) > 0) {
+                            $cat = mysqli_fetch_assoc($catResult);
+                            echo '<span class="category-tag" data-id="' . $catId . '">' . htmlspecialchars($cat['title']) . '<span onclick="event.stopPropagation(); toggleCategory(' . $catId . ', \'' . htmlspecialchars($cat['title'], ENT_QUOTES) . '\')">&times;</span></span>';
+                            echo '<script>selectedCategories.push({id: ' . $catId . ', title: \'' . htmlspecialchars($cat['title'], ENT_QUOTES) . '\'});</script>';
+                        }
+                    }
+                    ?>
                     <em style="color: var(--color-gray-300)">Select at least one category</em>
                 </div>
-                <input type="hidden" name="categories[]" id="categories-input" value="" required>
+                <input type="hidden" name="categories" id="categories-input" value="" required>
             </div>
 
             <textarea rows="10" name="body" placeholder="Body"><?= $post['body'] ?></textarea>
@@ -100,7 +109,7 @@ function updateSelectedCategories() {
     const input = document.getElementById('categories-input');
     
     container.innerHTML = selectedCategories.map(cat => `
-        <span class="category-tag">
+        <span class="category-tag" data-id="${cat.id}">
             ${cat.title}
             <span onclick="event.stopPropagation(); toggleCategory(${cat.id}, '${cat.title}')">&times;</span>
         </span>
@@ -142,4 +151,15 @@ async function addNewCategory() {
         console.error('Error adding category:', error);
     }
 }
+
+// Initialize selected categories on page load
+window.onload = function() {
+    const initialCategories = document.querySelectorAll('.category-item.selected');
+    initialCategories.forEach(cat => {
+        const id = parseInt(cat.dataset.id);
+        const title = cat.textContent.trim();
+        selectedCategories.push({ id, title });
+    });
+    updateSelectedCategories();
+};
 </script>
