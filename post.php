@@ -118,24 +118,34 @@ if(!empty($category_ids)) {
 
 <!------------ end single post  ----------------------->
 
+<!-- Comments Section -->
 <section class="comments">
-    <div class="container comments__container">
-        <h3>Comments</h3>
-        <?php if (isset($_SESSION['user-id'])) : ?>
-            <form id="comment-form">
-                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                <textarea name="comment" rows="4" placeholder="Add a comment"></textarea>
-                <button type="submit" class="btn">Post Comment</button>
-            </form>
-        <?php else : ?>
-            <p>You must be logged in to post a comment. <a href="<?= ROOT_URL ?>signin.php">Login</a></p>
-        <?php endif; ?>
-
-        <div id="comments-section">
-            <!-- Comments will be loaded here via AJAX -->
-        </div>
-    </div>
+    <?php
+    require_once 'partials/comment-functions.php';
+    $comments = get_comments($post['id']);
+    display_comments($comments);
+    ?>
+    
+    <form class="add-comment-form" action="add-comment-logic.php" method="POST">
+        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+        <input type="hidden" name="parent_id" id="parent_id" value="">
+        <textarea name="comment_body" rows="4" placeholder="Add a comment..."></textarea>
+        <button type="submit" class="btn">Post Comment</button>
+    </form>
 </section>
+
+<script>
+document.querySelectorAll('.reply-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        const commentId = button.dataset.commentId;
+        const form = document.querySelector('.add-comment-form');
+        document.getElementById('parent_id').value = commentId;
+        form.scrollIntoView({ behavior: 'smooth' });
+        form.querySelector('textarea').focus();
+        form.querySelector('textarea').placeholder = 'Write a reply...';
+    });
+});
+</script>
 
 <?php
 include 'partials/footer.php';
