@@ -27,13 +27,15 @@ if(isset($_SESSION['user-id'])) {
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>css/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.css">
     <!-- ICONSCOUT CDN -->
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <!-- GOOGLE FONT (MONTSERRAT) -->
+   <!-- <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+--> <!-- GOOGLE FONT (MONTSERRAT) -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/interactions.css">
+    <link rel="stylesheet" href="<?= ROOT_URL ?>css/skeleton.css">
 </head>
 <body>
+    <?php include 'skeleton-loader.php'; ?>
     <nav>
         <div class="container nav__container">
             <a href="<?= ROOT_URL ?>" class="nav__logo"><img src="<?= ROOT_URL ?>partials/favicon.ico" alt=""></a>
@@ -78,4 +80,5 @@ if(isset($_SESSION['user-id'])) {
         require_once __DIR__ . '/../includes/breadcrumbs.php';
     }
     ?>
+    <script src="<?= ROOT_URL ?>js/skeleton-loader.js"></script>
 <!---  end nav   -->
