@@ -52,9 +52,9 @@ body {
 }
 
 .container {
-    width: var(--container-width-lg);  
-    max-width: 1900px;
-    margin-inline: auto;
+    width: var(--width-90);
+    margin: 0 auto;
+    max-width: 1200px; /* Ensure this max-width is set */
 }
 
 section {
@@ -418,64 +418,29 @@ nav button {
 }
 
 /********* posts styles   **********/
-
-
 .posts__container {
-    column-count: 3;
-    column-gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Change to 3 columns */
+    gap: 2rem;
     margin-bottom: 5rem;
-}
-
-.posts__contained {
-    column-count: 3;
-    column-gap: 2rem;
-    width: 100%;
-    margin-bottom: 5rem;
-    text-align: center; 
-    margin-bottom: 2rem;
 }
 
 .post {
-    break-inside: avoid;
-    margin-bottom: 2rem;
-    display: inline-block;
-    width: 100%;
     background: var(--color-gray-900);
     border-radius: var(--card-boder-radius-3);
-}
-
-.post__thumbnail {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: auto;
-    border-radius: var(--card-boder-radius-3) var(--card-boder-radius-3) 0 0;
-}
-
-.post__info {
-    padding: 1rem;
-}
-
-.post__body {
-    max-height: 4.8em; /* Show only 3 lines of text */
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    box-orient: vertical;
+    padding-bottom: 1rem;
 }
 
 /* Responsive adjustments */
 @media screen and (max-width: 1024px) {
     .posts__container {
-        column-count: 2;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media screen and (max-width: 600px) {
     .posts__container {
-        column-count: 1;
+        grid-template-columns: 1fr;
     }
 }
 

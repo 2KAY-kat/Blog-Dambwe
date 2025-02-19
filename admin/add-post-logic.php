@@ -5,14 +5,23 @@ if (isset($_POST['submit'])) {
     $author_id = $_SESSION['user-id'];
     $title = filter_var($_POST['title'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $body = filter_var($_POST['body'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $categories = isset($_POST['categories']) ? explode(',', $_POST['categories']) : [];
+    // Fix: Handle categories properly - they're already coming as an array
+    $categories = isset($_POST['categories']) ? $_POST['categories'] : [];
+    // If categories is a string (comma-separated), then use explode
+    if (is_string($categories)) {
+        $categories = explode(',', $categories);
+    }
+    // If it's a single category, convert to array
+    if (!is_array($categories)) {
+        $categories = [$categories];
+    }
     $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     $thumbnail = $_FILES['thumbnail'];
 
     // Validate form data
     if (!$title) {
         $_SESSION['add-post'] = "Enter post title";
-    } elseif (!$categories) {
+    } elseif (empty($categories)) {
         $_SESSION['add-post'] = "Select at least one category";
     } elseif (!$body) {
         $_SESSION['add-post'] = "Enter post body";
@@ -51,17 +60,22 @@ if (isset($_POST['submit'])) {
         }
 
         // Insert post into database
-        $query = "INSERT INTO posts (title, body, thumbnail, date_time, author_id, is_featured) VALUES ('$title', '$body', '$thumbnail_name', NOW(), $author_id, $is_featured)";
-        $result = mysqli_query($connection, $query);
+        $query = "INSERT INTO posts (title, body, thumbnail, date_time, author_id, is_featured) VALUES (?, ?, ?, NOW(), ?, ?)";
+        $stmt = mysqli_prepare($connection, $query);
+        mysqli_stmt_bind_param($stmt, 'sssii', $title, $body, $thumbnail_name, $author_id, $is_featured);
+        $result = mysqli_stmt_execute($stmt);
 
         if (!mysqli_errno($connection)) {
             // Get the post id
             $post_id = mysqli_insert_id($connection);
 
-            // Insert categories
+            // Insert categories using prepared statement
+            $category_query = "INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)";
+            $category_stmt = mysqli_prepare($connection, $category_query);
+            
             foreach ($categories as $category_id) {
-                $insert_category_query = "INSERT INTO post_categories (post_id, category_id) VALUES ($post_id, $category_id)";
-                mysqli_query($connection, $insert_category_query);
+                mysqli_stmt_bind_param($category_stmt, 'ii', $post_id, $category_id);
+                mysqli_stmt_execute($category_stmt);
             }
 
             $_SESSION['add-post-success'] = "New post added successfully";
