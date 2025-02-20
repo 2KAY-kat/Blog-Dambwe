@@ -22,7 +22,7 @@
 }
 
 .dislike-btn.active {
-    color: rgb(153, 2, 2); /* Or any other color to indicate active state */
+    color: #990202; /* Or any other color to indicate active state */
 }
 
 .comments__container {
