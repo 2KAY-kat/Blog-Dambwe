@@ -17,9 +17,12 @@
     color: var(--color-primary);
 }
 
-.like-btn.active,
+.like-btn.active {
+    color: #04568d; /* Or any other color to indicate active state */
+}
+
 .dislike-btn.active {
-    color: green; /* Or any other color to indicate active state */
+    color: rgb(153, 2, 2); /* Or any other color to indicate active state */
 }
 
 .comments__container {
