@@ -8,8 +8,10 @@ require 'config/constants.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="<?= ROOT_URL ?>partials/favicon.ico" type="image/x-icon">
     <title>404 - Page Not Found</title>
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/404.css">
+    <link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>css/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.css">
 </head>
 
 <body>
@@ -22,7 +24,7 @@ require 'config/constants.php';
 
 
         <p>
-            You Must be lost or the page you are trying to access is under development
+           You Must be lost or the page you are trying to access is under development
         </p>
 
         <a href="<?= ROOT_URL ?>index.php">

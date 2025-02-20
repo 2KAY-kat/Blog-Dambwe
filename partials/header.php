@@ -33,6 +33,9 @@ if(isset($_SESSION['user-id'])) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/interactions.css">
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/skeleton.css">
+    <script>
+        const ROOT_URL = '<?= ROOT_URL ?>';
+    </script>
 </head>
 <body>
     <?php include 'skeleton-loader.php'; ?>

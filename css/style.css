@@ -1724,3 +1724,187 @@ nav button#close__nav-btn {
         font-size: 0.9rem;
     }
 }
+
+/* Post Author Info Styles */
+.post__author-info .author__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.post__author-info .author__header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.post__author-info .follow-btn {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--card-boder-radius-2);
+    background: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.post__author-info .follow-btn.following {
+    background: var(--color-gray-700);
+}
+
+.post__author-info .follow-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+@media screen and (max-width: 600px) {
+    .post__author-info .follow-btn .follow-text {
+        display: none;
+    }
+    
+    .post__author-info .follow-btn {
+        min-width: unset;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Author Profile Styles */
+.author-profile {
+    margin-top: 6rem;
+}
+
+.author__header {
+    background: var(--color-gray-900);
+    padding: 2rem;
+    border-radius: var(--card-boder-radius-3);
+    margin-bottom: 3rem;
+}
+
+.author__profile {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.author__avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 0.5rem solid var(--color-primary);
+    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.3);
+}
+
+.author__info {
+    flex: 1;
+}
+
+.author__info h1 {
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+}
+
+.author__bio {
+    color: var(--color-gray-300);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+
+.author__stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.author__stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-gray-300);
+}
+
+.author__stats i {
+    color: var(--color-primary-light);
+}
+
+.follow-btn {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 0.8rem 2rem;
+    border-radius: var(--card-boder-radius-2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.follow-btn i {
+    font-size: 1.1rem;
+}
+
+.follow-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+}
+
+.follow-btn.following {
+    background: transparent;
+    border-color: var(--color-gray-700);
+    color: var(--color-gray-300);
+}
+
+.follow-btn.following:hover {
+    background: var(--red-color);
+    border-color: var(--red-color);
+    color: var(--color-white);
+}
+
+.author__posts h2 {
+    margin-bottom: 2rem;
+    color: var(--color-white);
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1024px) {
+    .author__profile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .author__stats {
+        justify-content: center;
+    }
+
+    .author__avatar {
+        width: 120px;
+        height: 120px;
+        border-width: 0.3rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .author__info h1 {
+        font-size: 2rem;
+    }
+
+    .author__stats {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+}

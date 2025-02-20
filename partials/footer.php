@@ -83,6 +83,7 @@
 
 <script src="<?= ROOT_URL ?>scripts/main.js"></script>
 <script src="<?= ROOT_URL ?>scripts/js__cookie.js"></script>
+<script src="<?= ROOT_URL ?>js/follow.js"></script>
 
 <script>
 // Back to top functionality

@@ -74,8 +74,20 @@ $user = mysqli_fetch_assoc($result);
                             $posts_query = "SELECT COUNT(*) as post_count FROM posts WHERE author_id = $current_user_id";
                             $posts_result = mysqli_query($connection, $posts_query);
                             $post_count = mysqli_fetch_assoc($posts_result)['post_count'];
+
+                            // Get followers count
+                            $followers_query = "SELECT COUNT(*) as followers FROM followers WHERE following_id = $current_user_id";
+                            $followers_result = mysqli_query($connection, $followers_query);
+                            $followers_count = mysqli_fetch_assoc($followers_result)['followers'];
+
+                            // Get following count
+                            $following_query = "SELECT COUNT(*) as following FROM followers WHERE follower_id = $current_user_id";
+                            $following_result = mysqli_query($connection, $following_query);
+                            $following_count = mysqli_fetch_assoc($following_result)['following'];
                         ?>
-                        <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span>
+                        <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span> |
+                        <span><i class="fas fa-users"></i> <?= $followers_count ?> Followers</span> |
+                        <span><i class="fas fa-user-friends"></i> <?= $following_count ?> Following</span> |
                         <span><i class="fas fa-calendar"></i> Joined <?= date("M Y", strtotime($user['date_time'])) ?></span>
                     </div>
                 </div>
