@@ -46,9 +46,9 @@ if(isset($_POST['submit'])) {
         if($_FILES['cover_photo']['name']) {
             $cover = $_FILES['cover_photo'];
             $time = time();
-            $cover_photo_name = 'cover_' . $time . $cover['name'];
+            $cover_photo_name = $time . $cover['name'];
             $cover_tmp = $cover['tmp_name'];
-            $cover_path = '../images/' . $cover_photo_name;
+            $cover_photo_path = '../images/' . $cover_photo_name;
 
             // Validate cover photo
             $allowed = ['png', 'jpg', 'jpeg'];
@@ -56,7 +56,7 @@ if(isset($_POST['submit'])) {
             $ext = end($ext);
             if(in_array(strtolower($ext), $allowed)) {
                 if($cover['size'] < 2000000) {
-                    move_uploaded_file($cover_tmp, $cover_path);
+                    move_uploaded_file($cover_tmp, $cover_photo_path);
                 } else {
                     $_SESSION['edit-profile'] = "Cover photo file too large. Maximum size is 2MB";
                 }
@@ -79,7 +79,8 @@ if(isset($_POST['submit'])) {
                     'id' => $id,
                     'firstname' => $firstname,
                     'lastname' => $lastname,
-                    'avatar' => $avatar_name
+                    'avatar' => $avatar_name,
+                    'cover' => $cover_photo_name
                 ];
             } else {
                 $_SESSION['edit-profile'] = "Error updating profile";

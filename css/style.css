@@ -1139,16 +1139,15 @@ input, textarea, select {
 /* Cover Preview Styles */
 .cover-preview {
     width: 90%;
-    height: 50px;
+    height: 500px;
     margin: 1rem 0;
     border-radius: var(--card-boder-radius-2);
-    overflow: hidden;
     border: 2px solid var(--color-primary);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .cover-preview img {
-
+    width: 500px;
     object-fit: cover;
 }
 
