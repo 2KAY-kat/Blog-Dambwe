@@ -135,6 +135,45 @@ $(document).ready(function() {
         });
     });
 
+    // Add delete comment handler after existing event handlers
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+        
+        if (!confirm('Are you sure you want to delete this comment? This will also delete all replies to this comment.')) {
+            return;
+        }
+
+        const button = $(this);
+        const commentId = button.data('comment-id');
+        const commentElement = button.closest('.comment');
+
+        $.ajax({
+            url: window.ROOT_URL + 'ajax/delete_comment.php',
+            type: 'POST',
+            data: { comment_id: commentId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    commentElement.slideUp(300, function() {
+                        $(this).remove();
+                        // Reload comments to update reply counts
+                        loadComments();
+                    });
+                } else {
+                    alert(response.message || 'Error deleting comment');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Delete comment error:', {
+                    status: status,
+                    error: error,
+                    response: xhr.responseText
+                });
+                alert('Failed to delete comment. Please try again.');
+            }
+        });
+    });
+
     // Initial load of comments
     loadComments();
 });

@@ -91,6 +91,5 @@ try {
     }
 
 } catch (Exception $e) {
-    error_log("Error in get_comments.php: " . $e->getMessage());
     echo '<div class="alert alert-danger">' . htmlspecialchars($e->getMessage()) . '</div>';
 }

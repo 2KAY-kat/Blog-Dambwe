@@ -2284,3 +2284,29 @@ nav button#close__nav-btn {
 .post__interactions a {
     color: var(--color-gray-700);
 }
+
+/* Delete Button Styles */
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--red-color);
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--card-boder-radius-2);
+    font-size: 0.9rem;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.delete-btn:hover {
+    background: var(--red-color);
+    color: var(--color-white);
+}
+
+.comment-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
