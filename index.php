@@ -8,12 +8,18 @@ $featured_result = mysqli_query($connection, $featured_query);
 $featured = mysqli_fetch_assoc($featured_result);
 
 // retrive the posts from db 
-$query = "SELECT *,
-            (SELECT like_value FROM likes_dislikes 
-             WHERE post_id = posts.id AND user_id = " . (isset($_SESSION['user-id']) ? $_SESSION['user-id'] : 0) . ") AS user_like_value,
-            (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) AS comment_count
-          FROM posts ORDER BY date_time DESC LIMIT 9";
-$posts = mysqli_query($connection, $query);
+$user_id = isset($_SESSION['user-id']) ? $_SESSION['user-id'] : 0;
+$query = "SELECT p.*,
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND type = 'like') as likes_count,
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND type = 'dislike') as dislikes_count,
+            (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comment_count,
+            (SELECT type FROM post_reactions WHERE post_id = p.id AND user_id = ?) as user_reaction
+          FROM posts p ORDER BY date_time DESC LIMIT 9";
+
+$stmt = mysqli_prepare($connection, $query);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$posts = mysqli_stmt_get_result($stmt);
 ?>
 
 <!--    Retrive the is_featured post --->
@@ -135,28 +141,22 @@ $posts = mysqli_query($connection, $query);
                             </small>
                         </div>
                     </div>
-                    <?php
-                    $like_count_query = "SELECT COUNT(*) AS likes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = 1";
-                    $like_count_result = mysqli_query($connection, $like_count_query);
-                    $like_count_data = mysqli_fetch_assoc($like_count_result);
-                    $likes_count = $like_count_data['likes'];
-
-                    $dislike_count_query = "SELECT COUNT(*) AS dislikes FROM likes_dislikes WHERE post_id = {$post['id']} AND like_value = -1";
-                    $dislike_count_result = mysqli_query($connection, $dislike_count_query);
-                    $dislike_count_data = mysqli_fetch_assoc($dislike_count_result);
-                    $dislikes_count = $dislike_count_data['dislikes'];
-
-                    $user_like_value = $post['user_like_value'];
-                    ?>
                     <div class="post__interactions">
-                        <span class="like-btn <?= ($user_like_value == 1) ? 'active' : '' ?>" data-post-id="<?= $post['id'] ?>" data-action="like">
-                            <i class="fa fa-thumbs-up"></i> <span id="like-count-<?= $post['id'] ?>"><?= $likes_count ?></span>
+                        <span class="interaction-item <?= ($post['user_reaction'] === 'like') ? 'active' : '' ?>" 
+                              data-post-id="<?= $post['id'] ?>" 
+                              data-action="like">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span class="interaction-count"><?= $post['likes_count'] ?? 0 ?></span>
                         </span>
-                        <span class="dislike-btn <?= ($user_like_value == -1) ? 'active' : '' ?>" data-post-id="<?= $post['id'] ?>" data-action="dislike">
-                            <i class="fa fa-thumbs-down"></i> <span id="dislike-count-<?= $post['id'] ?>"><?= $dislikes_count ?></span>
+                        <span class="interaction-item <?= ($post['user_reaction'] === 'dislike') ? 'active' : '' ?>" 
+                              data-post-id="<?= $post['id'] ?>" 
+                              data-action="dislike">
+                            <i class="fas fa-thumbs-down"></i>
+                            <span class="interaction-count"><?= $post['dislikes_count'] ?? 0 ?></span>
                         </span>
                         <a href="<?= ROOT_URL ?>post.php?id=<?= $post['id'] ?>#comments-section">
-                            <i class="fa fa-comment"></i> <span><?= $post['comment_count'] ?></span>
+                            <i class="fas fa-comment"></i>
+                            <span><?= $post['comment_count'] ?></span>
                         </a>
                     </div>
                 </div>
@@ -181,8 +181,12 @@ $posts = mysqli_query($connection, $query);
         <?php endwhile ?>
     </div>
 </section>
-
-<!------   end buttons category -->
+<script>
+    window.ROOT_URL = '<?= ROOT_URL ?>';
+    window.userId = <?= isset($_SESSION['user-id']) ? $_SESSION['user-id'] : 'null' ?>;
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<?= ROOT_URL ?>js/global.js"></script>
 <script src="<?= ROOT_URL ?>js/interactions-likes.js"></script>
+
 <?php include 'partials/footer.php'; ?>

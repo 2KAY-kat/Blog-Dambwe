@@ -6,7 +6,7 @@ $(document).ready(function() {
 
     function loadComments() {
         $.ajax({
-            url: window.ROOT_URL + 'ajax/get_comments.php',
+            url: BlogApp.ROOT_URL + 'ajax/get_comments.php',
             type: 'GET',
             data: { post_id: postId },
             success: function(response) {
@@ -21,6 +21,88 @@ $(document).ready(function() {
                 $('#comments-container').html('<div class="alert alert-danger">Failed to load comments</div>');
             }
         });
+    }
+
+    window.loadComments = loadComments;
+
+    function createCommentHTML(comment) {
+        return `
+            <div class="comment" data-comment-id="${comment.id}">
+                <div class="comment-content">
+                    <div class="comment-avatar">
+                        <img src="${ROOT_URL}images/${comment.avatar}" alt="${comment.firstname}">
+                    </div>
+                    <div class="comment-body">
+                        <h4>${comment.firstname} ${comment.lastname}</h4>
+                        <p>${comment.content}</p>
+                        <div class="comment-meta">
+                            <div class="interaction-item ${comment.user_reaction === 'like' ? 'active' : ''}" 
+                                 onclick="handleCommentReaction(${comment.id}, 'like')">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span class="interaction-count">${comment.likes_count}</span>
+                            </div>
+                            <div class="interaction-item ${comment.user_reaction === 'dislike' ? 'active' : ''}" 
+                                 onclick="handleCommentReaction(${comment.id}, 'dislike')">
+                                <i class="fas fa-thumbs-down"></i>
+                                <span class="interaction-count">${comment.dislikes_count}</span>
+                            </div>
+                            <button class="reply-btn" onclick="showReplyForm(${comment.id})">Reply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    async function handleCommentReaction(commentId, type) {
+        if (!window.userId) {
+            window.location.href = `${ROOT_URL}signin.php`;
+            return;
+        }
+
+        try {
+            const response = await fetch(`${ROOT_URL}api/comment-reaction.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `comment_id=${commentId}&type=${type}`
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    updateCommentReactionCounts(commentId, data.counts);
+                    toggleCommentReactionState(commentId, type, data.state === 'added');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function updateCommentReactionCounts(commentId, counts) {
+        const comment = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (comment) {
+            comment.querySelector('.fa-thumbs-up + .interaction-count').textContent = counts.likes;
+            comment.querySelector('.fa-thumbs-down + .interaction-count').textContent = counts.dislikes;
+        }
+    }
+
+    function toggleCommentReactionState(commentId, type, isActive) {
+        const comment = document.querySelector(`[data-comment-id="${commentId}"]`);
+        if (comment) {
+            const likeBtn = comment.querySelector('.fa-thumbs-up').parentElement;
+            const dislikeBtn = comment.querySelector('.fa-thumbs-down').parentElement;
+            
+            if (type === 'like') {
+                likeBtn.classList.toggle('active', isActive);
+                if (isActive) dislikeBtn.classList.remove('active');
+            } else {
+                dislikeBtn.classList.toggle('active', isActive);
+                if (isActive) likeBtn.classList.remove('active');
+            }
+        }
     }
 
     // Handle all comment form submissions (both new comments and replies)
