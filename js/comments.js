@@ -1,6 +1,9 @@
 $(document).ready(function() {
     const postId = $('input[name="post_id"]').val();
 
+    let currentCommentId = null;
+    let currentCommentElement = null;
+
     function loadComments() {
         $.ajax({
             url: window.ROOT_URL + 'ajax/get_comments.php',
@@ -135,26 +138,32 @@ $(document).ready(function() {
         });
     });
 
-    // Add delete comment handler after existing event handlers
+    // Handle delete button clicks
     $(document).on('click', '.delete-btn', function(e) {
         e.preventDefault();
+        currentCommentId = $(this).data('comment-id');
+        currentCommentElement = $(this).closest('.comment');
+        $('#delete-modal').fadeIn(300);
+    });
+
+    // Add modal handlers
+    $(document).on('click', '.cancel-delete', function() {
+        $('#delete-modal').fadeOut(300);
+        currentCommentId = null;
+        currentCommentElement = null;
+    });
+
+    $(document).on('click', '.confirm-delete', function() {
+        if (!currentCommentId) return;
         
-        if (!confirm('Are you sure you want to delete this comment? This will also delete all replies to this comment.')) {
-            return;
-        }
-
-        const button = $(this);
-        const commentId = button.data('comment-id');
-        const commentElement = button.closest('.comment');
-
         $.ajax({
             url: window.ROOT_URL + 'ajax/delete_comment.php',
             type: 'POST',
-            data: { comment_id: commentId },
+            data: { comment_id: currentCommentId },
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    commentElement.slideUp(300, function() {
+                    currentCommentElement.slideUp(300, function() {
                         $(this).remove();
                         // Reload comments to update reply counts
                         loadComments();
@@ -162,6 +171,7 @@ $(document).ready(function() {
                 } else {
                     alert(response.message || 'Error deleting comment');
                 }
+                $('#delete-modal').fadeOut(300);
             },
             error: function(xhr, status, error) {
                 console.error('Delete comment error:', {
@@ -170,8 +180,18 @@ $(document).ready(function() {
                     response: xhr.responseText
                 });
                 alert('Failed to delete comment. Please try again.');
+                $('#delete-modal').fadeOut(300);
             }
         });
+    });
+
+    // Close modal when clicking outside
+    $(window).on('click', function(e) {
+        if ($(e.target).is('#delete-modal')) {
+            $('#delete-modal').fadeOut(300);
+            currentCommentId = null;
+            currentCommentElement = null;
+        }
     });
 
     // Initial load of comments

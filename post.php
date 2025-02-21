@@ -148,6 +148,17 @@ if(!empty($category_ids)) {
     <div id="comments-container"></div>
 </section>
 
+<div id="delete-modal" class="modal">
+    <div class="modal-content">
+        <h3>Delete Comment</h3>
+        <p>Are you sure you want to delete this comment? This will also delete all replies to this comment.</p>
+        <div class="modal-buttons">
+            <button class="btn confirm-delete">Delete</button>
+            <button class="btn cancel-delete">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <!-- Scripts -->
 <script>
     window.ROOT_URL = '<?= ROOT_URL ?>';

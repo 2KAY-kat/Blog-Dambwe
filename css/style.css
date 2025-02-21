@@ -2310,3 +2310,94 @@ nav button#close__nav-btn {
     gap: 0.5rem;
     align-items: center;
 }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--color-gray-900);
+    padding: 2rem;
+    border-radius: var(--card-boder-radius-3);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-content h3 {
+    color: var(--color-white);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    color: var(--color-gray-300);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.modal-buttons .btn {
+    padding: 0.5rem 1.5rem;
+}
+
+.modal-buttons .confirm-delete {
+    background: var(--red-color);
+}
+
+.modal-buttons .confirm-delete:hover {
+    background: var(--color-white);
+    color: var(--red-color);
+}
+
+.modal-buttons .cancel-delete {
+    background: var(--color-gray-700);
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+/* Responsive modal */
+@media screen and (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-buttons .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

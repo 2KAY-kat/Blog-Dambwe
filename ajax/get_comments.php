@@ -43,10 +43,23 @@ function get_comments_tree($post_id, $parent_id = 0, $level = 0) {
                     <p>' . htmlspecialchars($comment['comment_text']) . '</p>
                     <div class="comment-meta">
                         <small>' . timeAgo($comment['date_time']) . '</small>
-                        ' . (isset($_SESSION['user-id']) ? 
-                            '<button class="reply-btn" data-comment-id="' . $comment['id'] . '">
-                                <i class="fas fa-reply"></i> Reply
-                            </button>' : '') . '
+                        <div class="comment-actions">';
+                        
+        // Add reply button if user is logged in
+        if (isset($_SESSION['user-id'])) {
+            $html .= '<button class="reply-btn" data-comment-id="' . $comment['id'] . '">
+                <i class="fas fa-reply"></i> Reply
+            </button>';
+            
+            // Add delete button if comment belongs to current user
+            if ($_SESSION['user-id'] == $comment['user_id']) {
+                $html .= '<button class="delete-btn" data-comment-id="' . $comment['id'] . '">
+                    <i class="fas fa-trash"></i> Delete
+                </button>';
+            }
+        }
+
+        $html .= '</div>
                     </div>
                 </div>
             </div>';
