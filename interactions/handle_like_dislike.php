@@ -2,63 +2,51 @@
 require '../config/database.php';
 
 if (!isset($_SESSION['user-id'])) {
-    echo json_encode(['success' => false, 'message' => 'You must be logged in to like/dislike.']);
+    echo json_encode(['success' => false, 'message' => 'Please log in to like or dislike posts']);
     exit;
 }
 
-$postId = filter_var($_POST['post_id'], FILTER_SANITIZE_NUMBER_INT);
+$user_id = $_SESSION['user-id'];
+$post_id = filter_var($_POST['post_id'], FILTER_SANITIZE_NUMBER_INT);
 $action = filter_var($_POST['action'], FILTER_SANITIZE_STRING);
-$userId = $_SESSION['user-id'];
 
-// Check if the user has already liked/disliked the post
-$checkQuery = "SELECT * FROM likes_dislikes WHERE user_id = $userId AND post_id = $postId";
-$checkResult = mysqli_query($connection, $checkQuery);
+// Determine the like_value based on action
+$like_value = ($action === 'like') ? 1 : -1;
 
-if (mysqli_num_rows($checkResult) > 0) {
-    $existingLike = mysqli_fetch_assoc($checkResult);
-    // User has already interacted
-    if (($action == 'like' && $existingLike['like_value'] == 1) || ($action == 'dislike' && $existingLike['like_value'] == -1)) {
-        // User is undoing their action
-        $deleteQuery = "DELETE FROM likes_dislikes WHERE id = " . $existingLike['id'];
-        mysqli_query($connection, $deleteQuery);
+// Check if user has already liked/disliked
+$check_query = "SELECT * FROM likes_dislikes WHERE user_id = $user_id AND post_id = $post_id";
+$check_result = mysqli_query($connection, $check_query);
+
+if (mysqli_num_rows($check_result) > 0) {
+    $existing_like = mysqli_fetch_assoc($check_result);
+    if ($existing_like['like_value'] == $like_value) {
+        // User is un-liking/un-disliking
+        $query = "DELETE FROM likes_dislikes WHERE user_id = $user_id AND post_id = $post_id";
+        $like_value = 0;
     } else {
-        // User is changing their action
-        $newValue = ($action == 'like') ? 1 : -1;
-        $updateQuery = "UPDATE likes_dislikes SET like_value = $newValue WHERE id = " . $existingLike['id'];
-        mysqli_query($connection, $updateQuery);
+        // User is changing their vote
+        $query = "UPDATE likes_dislikes SET like_value = $like_value WHERE user_id = $user_id AND post_id = $post_id";
     }
 } else {
-    // User is interacting for the first time
-    $likeValue = ($action == 'like') ? 1 : -1;
-    $insertQuery = "INSERT INTO likes_dislikes (user_id, post_id, like_value) VALUES ($userId, $postId, $likeValue)";
-    mysqli_query($connection, $insertQuery);
+    // New like/dislike
+    $query = "INSERT INTO likes_dislikes (user_id, post_id, like_value) VALUES ($user_id, $post_id, $like_value)";
 }
 
-// Get updated like/dislike counts
-$likesQuery = "SELECT COUNT(*) AS likes FROM likes_dislikes WHERE post_id = $postId AND like_value = 1";
-$dislikesQuery = "SELECT COUNT(*) AS dislikes FROM likes_dislikes WHERE post_id = $postId AND like_value = -1";
+mysqli_query($connection, $query);
 
-$likesResult = mysqli_query($connection, $likesQuery);
-$dislikesResult = mysqli_query($connection, $dislikesQuery);
+// Get updated counts
+$likes_query = "SELECT COUNT(*) as count FROM likes_dislikes WHERE post_id = $post_id AND like_value = 1";
+$dislikes_query = "SELECT COUNT(*) as count FROM likes_dislikes WHERE post_id = $post_id AND like_value = -1";
 
-$likesData = mysqli_fetch_assoc($likesResult);
-$dislikesData = mysqli_fetch_assoc($dislikesResult);
+$likes_result = mysqli_query($connection, $likes_query);
+$dislikes_result = mysqli_query($connection, $dislikes_query);
 
-// Get the user's current like value
-$userLikeValueQuery = "SELECT like_value FROM likes_dislikes WHERE post_id = $postId AND user_id = $userId";
-$userLikeValueResult = mysqli_query($connection, $userLikeValueQuery);
+$likes = mysqli_fetch_assoc($likes_result)['count'];
+$dislikes = mysqli_fetch_assoc($dislikes_result)['count'];
 
-if (mysqli_num_rows($userLikeValueResult) > 0) {
-    $userLikeValueData = mysqli_fetch_assoc($userLikeValueResult);
-    $userLikeValue = $userLikeValueData['like_value'];
-} else {
-    $userLikeValue = 0; // No like/dislike
-}
-
-header('Content-Type: application/json');
 echo json_encode([
     'success' => true,
-    'likes' => $likesData['likes'],
-    'dislikes' => $dislikesData['dislikes'],
-    'user_like_value' => $userLikeValue
+    'likes' => $likes,
+    'dislikes' => $dislikes,
+    'user_like_value' => $like_value
 ]);

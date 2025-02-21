@@ -131,8 +131,6 @@ $posts = mysqli_query($connection, $query);
 <!------   end buttons category -->
 
 
-<?php
-include 'partials/footer.php';
-
-
-?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<?= ROOT_URL ?>js/interactions-likes.js"></script>
+<?php include 'partials/footer.php'; ?>

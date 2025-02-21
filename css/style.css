@@ -2262,3 +2262,25 @@ nav button#close__nav-btn {
 .like-comment-btn:hover {
     color: var(--color-white);
 }
+/*
+.like-btn.active,
+.dislike-btn.active {
+    color: var(--color-primary);
+}
+*/
+.like-btn:hover,
+.dislike-btn:hover {
+    cursor: pointer;
+    color: var(--color-primary);
+}
+
+.post__interactions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.post__interactions span,
+.post__interactions a {
+    color: var(--color-gray-700);
+}
