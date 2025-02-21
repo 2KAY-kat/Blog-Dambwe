@@ -1,5 +1,11 @@
 <?php
-require 'config/constants.php';
+require 'config/database.php'; // This now includes session handling
+
+// Clear signup/signin data if user is already logged in
+if (isset($_SESSION['user-id'])) {
+    header('location: ' . ROOT_URL);
+    exit;
+}
 
 $username_email = $_SESSION['signin_data']['username_email'] ?? null;
 $password = $_SESSION['signin_data']['password'] ?? null;

@@ -2,40 +2,48 @@
 require '../config/database.php';
 require '../helpers/format_time.php';
 
-$postId = filter_var($_GET['post_id'], FILTER_SANITIZE_NUMBER_INT);
+header('Content-Type: application/json');
 
-$query = "SELECT c.*, u.firstname, u.lastname, u.avatar 
-          FROM comments c 
-          JOIN users u ON c.user_id = u.id 
-          WHERE c.post_id = $postId 
-          ORDER BY c.date_time DESC";
-$result = mysqli_query($connection, $query);
-
-$commentsHtml = '';
-
-if (mysqli_num_rows($result) > 0) {
-    while ($comment = mysqli_fetch_assoc($result)) {
-        // Get like count for the comment
-        $commentId = $comment['id'];
-        $likesQuery = "SELECT COUNT(*) AS likes FROM comment_likes WHERE comment_id = $commentId";
-        $likesResult = mysqli_query($connection, $likesQuery);
-        $likesData = mysqli_fetch_assoc($likesResult);
-        $likesCount = $likesData['likes'];
-
-        $commentsHtml .= '<div class="comment">';
-        $commentsHtml .= '<div class="comment__author">';
-        $commentsHtml .= '<img src="' . ROOT_URL . 'images/' . $comment['avatar'] . '" alt="User Avatar">';
-        $commentsHtml .= '<h5>' . $comment['firstname'] . ' ' . $comment['lastname'] . '</h5>';
-        $commentsHtml .= '<small>' . timeAgo($comment['date_time']) . '</small>';
-        $commentsHtml .= '</div>';
-        $commentsHtml .= '<p>' . $comment['comment'] . '</p>';
-        $commentsHtml .= '<div class="comment__actions">';
-        $commentsHtml .= '<span class="like-comment-btn" data-comment-id="' . $comment['id'] . '"><i class="fa fa-thumbs-up"></i> Like (<span class="like-count">' . $likesCount . '</span>)</span>';
-        $commentsHtml .= '</div>';
-        $commentsHtml .= '</div>';
+try {
+    if (!isset($_GET['post_id'])) {
+        throw new Exception('Post ID is required');
     }
-} else {
-    $commentsHtml = '<p>No comments yet.</p>';
-}
 
-echo $commentsHtml;
+    $post_id = filter_var($_GET['post_id'], FILTER_SANITIZE_NUMBER_INT);
+    
+    $query = "SELECT c.*, u.firstname, u.lastname, u.avatar, 
+              (SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) as like_count
+              FROM comments c
+              JOIN users u ON c.user_id = u.id
+              WHERE c.post_id = ?
+              ORDER BY c.date_time DESC";
+              
+    $stmt = mysqli_prepare($connection, $query);
+    mysqli_stmt_bind_param($stmt, "i", $post_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    $comments = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $comments[] = [
+            'id' => $row['id'],
+            'text' => $row['comment_text'],
+            'author' => $row['firstname'] . ' ' . $row['lastname'],
+            'avatar' => $row['avatar'],
+            'date' => timeAgo($row['date_time']),
+            'likes' => $row['like_count'],
+            'user_id' => $row['user_id']
+        ];
+    }
+    
+    echo json_encode([
+        'success' => true,
+        'comments' => $comments
+    ]);
+
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage()
+    ]);
+}

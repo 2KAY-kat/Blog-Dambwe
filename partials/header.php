@@ -1,7 +1,6 @@
 <?php
-// Use filesystem path for includes
+// Remove session check since it's now handled in database.php
 require_once __DIR__ . '/../config/database.php';
-
 
 // current user in db
 
@@ -13,8 +12,6 @@ if(isset($_SESSION['user-id'])) {
 }
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">

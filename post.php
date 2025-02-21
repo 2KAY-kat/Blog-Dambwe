@@ -1,18 +1,25 @@
 <?php
-include 'partials/header.php';
+require 'config/database.php';
 require 'helpers/format_time.php';
 
-//retrive post using its id
-
+//retrieve post using its id
 if (isset($_GET['id'])) {
     $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
     $query = "SELECT * FROM posts WHERE id=$id";
     $result = mysqli_query($connection, $query);
     $post = mysqli_fetch_assoc($result);
+    
+    if (!$post) {
+        header('location: ' . ROOT_URL . 'blog.php');
+        exit();
+    }
 } else {
     header('location: ' . ROOT_URL . 'blog.php');
-    die();
-  }
+    exit();
+}
+
+// Now include the header
+include 'partials/header.php';
 ?>
 
 
@@ -119,47 +126,33 @@ if(!empty($category_ids)) {
 <!------------ end single post  ----------------------->
 
 <!-- Comments Section -->
-<section class="comments">
-    <?php
-    require_once 'partials/comment-functions.php';
-    $comments = get_comments($post['id']);
-    display_comments($comments);
-    ?>
+<section class="comments-section">
+    <h3>Comments</h3>
+    <?php if(isset($_SESSION['user-id'])): ?>
+        <div class="comment-form-wrapper">
+            <form class="comment-form" id="main-comment-form">
+                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                <input type="hidden" name="parent_id" value="0">
+                <textarea name="comment_text" placeholder="Write a comment..." required></textarea>
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Post Comment</button>
+                </div>
+            </form>
+        </div>
+    <?php else: ?>
+        <div class="sign-in-prompt">
+            <p>Please <a href="signin.php">sign in</a> to join the discussion.</p>
+        </div>
+    <?php endif; ?>
     
-    <form class="add-comment-form" action="add-comment-logic.php" method="POST">
-        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-        <input type="hidden" name="parent_id" id="parent_id" value="">
-        <textarea name="comment_body" rows="4" placeholder="Add a comment..."></textarea>
-        <button type="submit" class="btn">Post Comment</button>
-    </form>
+    <div id="comments-container"></div>
 </section>
 
+<!-- Scripts -->
 <script>
-document.querySelectorAll('.reply-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        const commentId = button.dataset.commentId;
-        const form = document.querySelector('.add-comment-form');
-        document.getElementById('parent_id').value = commentId;
-        form.scrollIntoView({ behavior: 'smooth' });
-        form.querySelector('textarea').focus();
-        form.querySelector('textarea').placeholder = 'Write a reply...';
-    });
-});
+    window.ROOT_URL = '<?= ROOT_URL ?>';
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<?= ROOT_URL ?>js/comments.js"></script>
 
-<?php
-include 'partials/footer.php';
-
-
-/********* esp32 for iot intergration
-mpu 6050 imu sensor
-electronic speed controller
-brushless dc motors dc
-lipo battery
-gps module 
-
-***********/
-
-
-
-?>
+<?php include 'partials/footer.php'; ?>
