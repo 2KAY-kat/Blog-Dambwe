@@ -1,4 +1,5 @@
 <?php
+require 'config/database.php';
 
 // Initialize session data if not already set
 if (!isset($_SESSION['signup-data'])) {
@@ -25,6 +26,19 @@ $createpassword = $_SESSION['signup-data']['createpassword'] ?? null;
 $confirmpassword = $_SESSION['signup-data']['confirmpassword'] ?? null;
 
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dambwe Blog | SIGN  IN</title>
+    <link rel="stylesheet" href="<?= ROOT_URL ?>css/style.css">
+    <link rel="stylesheet" href="<?= ROOT_URL ?>css/style-background.css">
+    <link rel="stylesheet" type="text/css" href="css/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.css">
+</head>
+<body>
 
 <section class="form__section">
     <div class="container form__section-container">
