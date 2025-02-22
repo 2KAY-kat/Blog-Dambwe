@@ -1,16 +1,12 @@
 <?php
-// Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require 'constants.php';
 
-require_once 'constants.php';
+//connection to db
 
-// Connect to the database
 $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-if ($connection->connect_error) {
-    die('Database connection failed: ' . $connection->connect_error);
+if(mysqli_error($connection)) {
+    die(mysqli_error($connection));
 }
 
 // Function to check if a column exists in a table
