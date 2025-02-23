@@ -1,4 +1,4 @@
-# DEV.Query Blog Platform
+# DEV.Query Blog Platform v0.0.1-beta
 
 A dynamic PHP-based blog platform with user authentication, content management, and responsive design.
 
