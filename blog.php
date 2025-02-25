@@ -36,10 +36,18 @@ $posts = mysqli_stmt_get_result($stmt);
     <div class="container posts__container">
 
         <?php while ($post = mysqli_fetch_assoc($posts)) : ?>
-            <article class="post">
-                <div class="post__thumbnail">
+
+            <?php
+                $thumbnail = $post['thumbnail'];
+                ?>
+
+            <article class="post <?= $thumbnail ? 'with-thumbnail' : 'no-thumbnail' ?>">
+              
+            <?php if ($thumbnail): ?>
+            <div class="post__thumbnail">
                     <img src="images/<?= $post['thumbnail'] ?>">
                 </div>
+ <?php endif ?>
                 <div class="post__info">
                     <?php
                     // get categories from db 

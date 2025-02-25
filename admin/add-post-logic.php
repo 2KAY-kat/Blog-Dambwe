@@ -5,13 +5,10 @@ if (isset($_POST['submit'])) {
     $author_id = $_SESSION['user-id'];
     $title = filter_var($_POST['title'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $body = filter_var($_POST['body'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    // Fix: Handle categories properly - they're already coming as an array
     $categories = isset($_POST['categories']) ? $_POST['categories'] : [];
-    // If categories is a string (comma-separated), then use explode
     if (is_string($categories)) {
         $categories = explode(',', $categories);
     }
-    // If it's a single category, convert to array
     if (!is_array($categories)) {
         $categories = [$categories];
     }
@@ -25,29 +22,31 @@ if (isset($_POST['submit'])) {
         $_SESSION['add-post'] = "Select at least one category";
     } elseif (!$body) {
         $_SESSION['add-post'] = "Enter post body";
-    } elseif (!$thumbnail['name']) {
-        $_SESSION['add-post'] = "Choose post thumbnail";
     } else {
-        // Work on thumbnail
-        $time = time();
-        $thumbnail_name = $time . $thumbnail['name'];
-        $thumbnail_tmp_name = $thumbnail['tmp_name'];
-        $thumbnail_destination_path = '../images/' . $thumbnail_name;
+        // Initialize thumbnail name as null
+        $thumbnail_name = null;
 
-        // Validate file
-        $allowed_files = ['png', 'jpg', 'jpeg'];
-        $extension = explode('.', $thumbnail_name);
-        $extension = end($extension);
-        if (in_array($extension, $allowed_files)) {
-            // Make sure file is not too large (2mb)
-            if ($thumbnail['size'] < 2000000) {
-                // Upload thumbnail
-                move_uploaded_file($thumbnail_tmp_name, $thumbnail_destination_path);
+        // Only process thumbnail if one was uploaded
+        if ($thumbnail['size'] > 0) {
+            $time = time();
+            $thumbnail_name = $time . $thumbnail['name'];
+            $thumbnail_tmp_name = $thumbnail['tmp_name'];
+            $thumbnail_destination_path = '../images/' . $thumbnail_name;
+
+            // Validate file
+            $allowed_files = ['png', 'jpg', 'jpeg'];
+            $extension = explode('.', $thumbnail_name);
+            $extension = end($extension);
+            if (in_array($extension, $allowed_files)) {
+                if ($thumbnail['size'] < 2000000) {
+                    // Upload thumbnail
+                    move_uploaded_file($thumbnail_tmp_name, $thumbnail_destination_path);
+                } else {
+                    $_SESSION['add-post'] = "Couldn't upload image. File size too big. Should be less than 2mb";
+                }
             } else {
-                $_SESSION['add-post'] = "Couldn't upload image. File size too big. Should be less than 2mb";
+                $_SESSION['add-post'] = "Couldn't upload image. File should be png, jpg, or jpeg";
             }
-        } else {
-            $_SESSION['add-post'] = "Couldn't upload image. File should be png, jpg, or jpeg";
         }
     }
 
@@ -72,7 +71,6 @@ if (isset($_POST['submit'])) {
             // Insert categories using prepared statement
             $category_query = "INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)";
             $category_stmt = mysqli_prepare($connection, $category_query);
-            
             foreach ($categories as $category_id) {
                 mysqli_stmt_bind_param($category_stmt, 'ii', $post_id, $category_id);
                 mysqli_stmt_execute($category_stmt);
@@ -83,7 +81,10 @@ if (isset($_POST['submit'])) {
             $_SESSION['add-post'] = "Couldn't add post to database";
         }
     }
-}
 
-header('location: ' . ROOT_URL . 'admin/index.php');
-die();
+    header('location: ' . ROOT_URL . 'admin/index.php');
+    die();
+} else {
+    header('location: ' . ROOT_URL . 'admin/add-post.php');
+    die();
+}

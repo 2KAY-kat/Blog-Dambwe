@@ -46,7 +46,7 @@ $categories = mysqli_query($connection, $query);
 
                     <textarea rows="10" name="body" placeholder="Body"><?= $body ?? '' ?></textarea>
                     <div class="form__control">
-                        <label for="thumbnail">Add Thumbnail</label>
+                        <label for="thumbnail">Add Thumbnail (Optional)</label>
                         <input type="file" name="thumbnail" id="thumbnail">
                     </div>
                     <?php if (isset($_SESSION['is_admin'])) : ?>

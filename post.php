@@ -61,9 +61,15 @@ include 'partials/header.php';
             </div>
         </div>
 
+        <?php
+                $thumbnail = $post['thumbnail'];
+                ?>
+
     <div class="singlepost__thumbnail">
+    <?php if ($thumbnail): ?>
         <img src="images/<?= $post['thumbnail'] ?>">
     </div>
+    <?php endif ?>
 
     <p>
     <?= $post['body'] ?>
