@@ -76,7 +76,7 @@ if(isset($_SESSION['user-id'])) {
     <?php 
     if (!strpos($_SERVER['REQUEST_URI'], 'signin.php') && 
         !strpos($_SERVER['REQUEST_URI'], 'signup.php')) {
-        // Use filesystem path for file inclusion
+        // Use filesystem path for file inclusion thid helps since its more available in all directories and also its fucking secure thanks to @copilot
         require_once __DIR__ . '/../includes/breadcrumbs.php';
     }
     ?>
