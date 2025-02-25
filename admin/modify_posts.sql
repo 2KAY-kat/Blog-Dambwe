@@ -1,0 +1,1 @@
+ALTER TABLE posts MODIFY thumbnail VARCHAR(255) NULL;
