@@ -119,11 +119,23 @@ $categories = mysqli_query($connection, $query);
                     <tr>
                         <td><?= $category['title'] ?></td>
                         <td><a href="<?= ROOT_URL ?>admin/edit-category.php?id=<?= $category['id'] ?>" class="btn sm">Edit</a></td>
-                        <td><a href="<?= ROOT_URL ?>admin/delete-category.php?id=<?= $category['id'] ?>" class="btn sm danger">Delete</a></td>
+                        <td><a href="#" class="btn sm danger" onclick="showDeleteModal(<?= $category['id'] ?>, '<?= addslashes($category['title']) ?>')">Delete</a></td>
                     </tr>
                     <?php endwhile ?>
                 </tbody>
             </table>
+
+            <!-- Add Delete Confirmation Modal -->
+            <div id="deleteModal" class="modal">
+                <div class="modal-content">
+                    <h3>Confirm Deletion</h3>
+                    <p>Are you sure you want to delete category: <span id="categoryTitle"></span>?</p>
+                    <div class="modal-buttons">
+                        <button onclick="hideDeleteModal()" class="btn">Cancel</button>
+                        <a href="#" id="confirmDelete" class="btn danger">Delete</a>
+                    </div>
+                </div>
+            </div>
 
             <?php else : ?>
                 <div class="alert__message error"><?= "No Categories Found" ?></div>
@@ -136,3 +148,29 @@ $categories = mysqli_query($connection, $query);
 <?php
 include '../partials/footer-auth.php';
 ?>
+
+<!-- Add before closing </body> tag -->
+<script>
+    function showDeleteModal(categoryId, categoryTitle) {
+        const modal = document.getElementById('deleteModal');
+        const categoryTitleSpan = document.getElementById('categoryTitle');
+        const confirmButton = document.getElementById('confirmDelete');
+        
+        categoryTitleSpan.textContent = categoryTitle;
+        confirmButton.href = '<?= ROOT_URL ?>admin/delete-category.php?id=' + categoryId;
+        modal.style.display = 'flex';
+    }
+
+    function hideDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('deleteModal');
+        if (event.target == modal) {
+            hideDeleteModal();
+        }
+    }
+</script>
