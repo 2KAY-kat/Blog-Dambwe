@@ -59,9 +59,10 @@ $user = mysqli_fetch_assoc($result);
                             <img src="<?= ROOT_URL . 'images/' . ($user['avatar'] ?? 'default-avatar.png') ?>" alt="Profile Image">
                         </div>
                         <div class="profile__image-overlay">
-                            <a href="<?= ROOT_URL ?>admin/edit-profile.php" class="btn">
+                            <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+                            <button class="btn" onclick="document.getElementById('avatar-upload').click();">
                                 <i class="fas fa-camera"></i> Change Photo
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -111,3 +112,35 @@ $user = mysqli_fetch_assoc($result);
 <?php
 include '../partials/footer-auth.php';
 ?>
+
+<script>
+document.getElementById('avatar-upload').addEventListener('change', async function(e) {
+    if (e.target.files.length > 0) {
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('avatar', file);
+        
+        try {
+            const response = await fetch('<?= ROOT_URL ?>admin/update-avatar.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Refresh the avatar image
+                const avatarImg = document.querySelector('.profile__image img');
+                avatarImg.src = data.avatar_url + '?v=' + new Date().getTime();
+                // Optional: Show success message
+                alert('Profile photo updated successfully!');
+            } else {
+                alert(data.message || 'Failed to update profile photo');
+            }
+        } catch (error) {
+            alert('An error occurred while updating the profile photo');
+            console.error(error);
+        }
+    }
+});
+</script>
