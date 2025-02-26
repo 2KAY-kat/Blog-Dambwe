@@ -15,19 +15,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.querySelector(`#${type} .reactions-list`);
         const loader = document.querySelector(`#${type} .loader`);
         
-        if (!container || !loader) return;
+        if (!container || !loader) {
+            console.error('Required elements not found');
+            return;
+        }
         
         container.innerHTML = '';
         loader.style.display = 'block';
 
         try {
+            // Log the request details
+            console.log('Loading reactions for:', {
+                postId: window.postId,
+                type: type,
+                url: `${window.ROOT_URL}api/get-reactions.php?post_id=${window.postId}&type=${type}`
+            });
+
             const response = await fetch(`${window.ROOT_URL}api/get-reactions.php?post_id=${window.postId}&type=${type}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
             const data = await response.json();
+            
+            // Log the response
+            console.log('API Response:', data);
 
             if (data.success) {
                 const reactions = data.reactions || [];
