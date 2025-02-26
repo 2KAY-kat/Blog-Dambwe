@@ -86,9 +86,15 @@ $user = mysqli_fetch_assoc($result);
                             $following_result = mysqli_query($connection, $following_query);
                             $following_count = mysqli_fetch_assoc($following_result)['following'];
                         ?>
-                        <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span> |
-                        <span><i class="fas fa-users"></i> <?= $followers_count ?> Followers</span> |
-                        <span><i class="fas fa-user-friends"></i> <?= $following_count ?> Following</span> |
+                        <a href="<?= ROOT_URL ?>admin/posts.php?author=<?= $current_user_id ?>" class="stat-link">
+                            <span><i class="fas fa-pencil-alt"></i> <?= $post_count ?> Posts</span>
+                        </a> |
+                        <a href="<?= ROOT_URL ?>admin/followers.php?user=<?= $current_user_id ?>" class="stat-link">
+                            <span><i class="fas fa-users"></i> <?= $followers_count ?> Followers</span>
+                        </a> |
+                        <a href="<?= ROOT_URL ?>admin/following.php?user=<?= $current_user_id ?>" class="stat-link">
+                            <span><i class="fas fa-user-friends"></i> <?= $following_count ?> Following</span>
+                        </a> |
                         <span><i class="fas fa-calendar"></i> Joined <?= date("M Y", strtotime($user['date_time'])) ?></span>
                     </div>
                 </div>

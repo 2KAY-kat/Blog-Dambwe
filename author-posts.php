@@ -100,9 +100,7 @@ if(isset($_GET['id'])) {
 
 <?php
 } else {
-    header('location: ' . ROOT_URL . 'blog.php');
-    die();
+    echo "<div class='alert__message error'><p>Author not found</p></div>";
 }
-
 include 'partials/footer.php';
 ?>
