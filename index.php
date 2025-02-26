@@ -165,6 +165,42 @@ $posts = mysqli_stmt_get_result($stmt);
                             <i class="fas fa-comment"></i>
                             <span><?= $post['comment_count'] ?></span>
                         </a>
+                        <div class="reactions-summary" data-post-id="<?= $post['id'] ?>">
+                            <?php
+                            $recent_query = "SELECT u.firstname 
+                                            FROM users u 
+                                            JOIN post_reactions pr ON u.id = pr.user_id 
+                                            WHERE pr.post_id = ? 
+                                            ORDER BY pr.created_at DESC 
+                                            LIMIT 2";
+                            $stmt = mysqli_prepare($connection, $recent_query);
+                            mysqli_stmt_bind_param($stmt, "i", $post['id']);
+                            mysqli_stmt_execute($stmt);
+                            $recent_result = mysqli_stmt_get_result($stmt);
+                            $recent_users = [];
+                            while ($user = mysqli_fetch_assoc($recent_result)) {
+                                $recent_users[] = $user['firstname'];
+                            }
+                            
+                            $total_reactions = $post['likes_count'] + $post['dislikes_count'];
+                            if ($total_reactions > 0) {
+                                if (count($recent_users) > 0) {
+                                    $others_count = $total_reactions - count($recent_users);
+                                    $names = implode(' and ', $recent_users);
+                                    if ($others_count > 0) {
+                                        echo "<a href='" . ROOT_URL . "post-reactions.php?id=" . $post['id'] . "'>" 
+                                             . $names . " and " . $others_count . " other" 
+                                             . ($others_count > 1 ? "s" : "") . " reacted</a>";
+                                    } else {
+                                        echo "<a href='" . ROOT_URL . "post-reactions.php?id=" . $post['id'] . "'>" 
+                                             . $names . " reacted</a>";
+                                    }
+                                }
+                            } else {
+                                echo "<span>Be the first to react</span>";
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </article>            

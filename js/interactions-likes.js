@@ -71,6 +71,23 @@ $(document).ready(function() {
                     .removeClass('active');
             }
         });
+
+        // Update reaction summary text if it exists
+        const summaryElement = document.querySelector(`[data-post-id="${postId}"] .reactions-summary`);
+        if (summaryElement && counts.recent_users) {
+            let summaryText = '';
+            if (counts.recent_users.length > 0) {
+                const names = counts.recent_users.slice(0, 2).map(u => u.firstname);
+                if (counts.total_count > 2) {
+                    summaryText = `${names.join(', ')} and ${counts.total_count - 2} others reacted`;
+                } else {
+                    summaryText = `${names.join(' and ')} reacted`;
+                }
+                summaryElement.innerHTML = `<a href="${window.ROOT_URL}post-reactions.php?id=${postId}">${summaryText}</a>`;
+            } else {
+                summaryElement.innerHTML = 'Be the first to react';
+            }
+        }
     }
 
     // Handle all interaction clicks

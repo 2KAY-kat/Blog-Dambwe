@@ -61,15 +61,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         mysqli_stmt_execute($stmt);
 
-        // Get updated counts
+        // Get updated counts and recent reactors
         $counts_query = "SELECT 
             (SELECT COUNT(*) FROM post_reactions WHERE post_id = ? AND type = 'like') as likes_count,
-            (SELECT COUNT(*) FROM post_reactions WHERE post_id = ? AND type = 'dislike') as dislikes_count";
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = ? AND type = 'dislike') as dislikes_count,
+            (SELECT COUNT(*) FROM post_reactions WHERE post_id = ?) as total_count";
         
         $stmt = mysqli_prepare($connection, $counts_query);
-        mysqli_stmt_bind_param($stmt, "ii", $post_id, $post_id);
+        mysqli_stmt_bind_param($stmt, "iii", $post_id, $post_id, $post_id);
         mysqli_stmt_execute($stmt);
         $counts = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+        // Get recent reactors
+        $recent_users_query = "SELECT u.id, u.firstname, u.lastname 
+                              FROM users u 
+                              JOIN post_reactions pr ON u.id = pr.user_id 
+                              WHERE pr.post_id = ? 
+                              ORDER BY pr.created_at DESC 
+                              LIMIT 2";
+
+        $stmt = mysqli_prepare($connection, $recent_users_query);
+        mysqli_stmt_bind_param($stmt, "i", $post_id);
+        mysqli_stmt_execute($stmt);
+        $recent_result = mysqli_stmt_get_result($stmt);
+
+        $recent_users = [];
+        while ($user = mysqli_fetch_assoc($recent_result)) {
+            $recent_users[] = $user;
+        }
+
+        $counts['recent_users'] = $recent_users;
 
         mysqli_commit($connection);
         
