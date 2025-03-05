@@ -37,3 +37,16 @@ const hideSidebar = () => {
 
 showSidebarBtn.addEventListener('click', showSidebar);
 hideSidebarBtn.addEventListener('click', hideSidebar);
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // Use the correct path relative to domain root
+        navigator.serviceWorker.register('/Blog-Dambwe/service-worker.js')
+        .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+        });
+    });
+}

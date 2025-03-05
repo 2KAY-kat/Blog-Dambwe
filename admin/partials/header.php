@@ -28,6 +28,9 @@ $_SESSION['user_is_admin'] = $current_user['is_admin'];
         const ROOT_URL = '<?= ROOT_URL ?>';
     </script>
 <script src="<?= ROOT_URL ?>js/notifications.js" defer></script>
+
+<link rel="manifest" href="/blog-dambwe/manifest.json">
+
 </head>
 <body>
     <nav>

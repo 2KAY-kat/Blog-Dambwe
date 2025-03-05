@@ -18,7 +18,7 @@ if(isset($_SESSION['user-id'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="<?= ROOT_URL ?>partials/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= ROOT_URL ?>partials/favicon.png" type="image/x-icon">
     <title>DEV.Query | HOME</title>
     <link rel="stylesheet" href="<?= ROOT_URL ?>css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= ROOT_URL ?>css/fontawesome-free-6.6.0-web/fontawesome-free-6.6.0-web/css/all.css">
@@ -33,6 +33,9 @@ if(isset($_SESSION['user-id'])) {
         const ROOT_URL = '<?= ROOT_URL ?>';
     </script>
 <script src="<?= ROOT_URL ?>js/notifications.js" defer></script>
+
+<link rel="manifest" href="<?= ROOT_URL ?>manifest.json">
+
 </head>
 <body>
     <?php include 'skeleton-loader.php'; ?>
@@ -61,7 +64,12 @@ if(isset($_SESSION['user-id'])) {
                         <?php endif; ?>
                     </ul>
                 </li>
-            <?php endif; ?>
+
+                <?php else : ?>
+                <li><a class="signin-btn" href="<?= ROOT_URL ?>signin.php"><i class="fa fa-sign-in"></i> login</a></li>
+                <li><a class="sign-up-btn" href="<?= ROOT_URL ?>signup.php"><i class="fa fa-sign-in"></i> Signup</a></li>
+                <?php endif ?>
+           
         
         <div class="nav__buttons">
             <?php if(isset($_SESSION['user-id'])) : ?>

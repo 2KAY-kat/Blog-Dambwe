@@ -13,7 +13,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ $1.php [L]
 
 # Custom error pages
-ErrorDocument 404 /Blog-Dambwe/404.php
+ErrorDocument 404 /404.php
 ErrorDocument 500 /Blog-Dambwe/500.php
 
 # =================================================================

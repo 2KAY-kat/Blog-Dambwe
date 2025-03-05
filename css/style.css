@@ -191,14 +191,14 @@ nav button {
     color: var(--color-bg);
 } 
 
-.nav__items li .signin-btn {
+.signin-btn {
     border: 2px solid var(--color-gray-900);
     border-radius: var(--card-boder-radius-1);
     color: var(--color-gray-900);
     padding: 8px 12px;
 }
 
-.nav__items li .signin-btn:hover {
+.signin-btn:hover {
     border: 2px solid var(--color-primary-light);
     border-radius: var(--card-boder-radius-5);
     color: var(--color-primary-light);
@@ -206,14 +206,14 @@ nav button {
     transition: var(--transition);
 }
 
-.nav__items li .sign-up-btn {
+.sign-up-btn {
     border: 2px solid var(--color-white);
     border-radius: var(--card-boder-radius-1);
     color: var(--color-white);
     padding: 8px 12px;
 }
 
-.nav__items li .sign-up-btn:hover {
+.sign-up-btn:hover {
     border: 2px solid var(--color-primary-light);
     border-radius: var(--card-boder-radius-5);
     color: var (--color-primary-light);
