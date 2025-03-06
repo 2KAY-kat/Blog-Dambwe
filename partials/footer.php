@@ -52,7 +52,7 @@
             <h4>Blog</h4>
             <ul>
                 <li><a href="" class="anchor">Popular</a></li>
-                <li><a href="" class="anchor">Recent</a></li>
+                <li><a href="recent.php" class="anchor">Recent Posts</a></li>
                 <li><a href="" class="anchor">Repair</a></li>
                 <li><a href="" class="anchor">Categories</a></li>
             </ul>

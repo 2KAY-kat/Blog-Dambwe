@@ -1,223 +1,259 @@
 <?php
-//include 'partials/header.php';
+include 'partials/header.php';
+require_once 'config/email_config.php';
 
 
-?>
-
-<!--
-
-    <section class="empty__page">
-        <h1>Contact Page</h1>
-    </section>
-
--->
-
-
-   
-
-
-
-<?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
-    $city = $_POST['city'];
-    $country = $_POST['country'];
-    $payment_method = $_POST['payment_method'];
+    // Sanitize input
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $subject = filter_input(INPUT_POST, 'subject', FILTER_SANITIZE_STRING);
+    $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
 
-    // Process payment or other logic here…
+    // Validate input
+    $errors = [];
+    if (!$name) $errors[] = "Name is required";
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Valid email is required";
+    if (!$subject) $errors[] = "Subject is required";
+    if (!$message) $errors[] = "Message is required";
 
-    echo "Checkout complete for " . $name;
+    if (empty($errors)) {
+        $to = ADMIN_EMAIL;
+        $email_subject = EMAIL_SUBJECT_PREFIX . $subject;
+        
+        // Convert headers array to string
+        $headers = 'From: ' . $email . "\r\n" .
+                  'Reply-To: ' . $email . "\r\n" .
+                  'X-Mailer: PHP/' . phpversion() . "\r\n" .
+                  'Content-Type: text/plain; charset=UTF-8';
+        
+        // Prepare email body
+        $email_body = "You have received a new message from your website contact form.\n\n";
+        $email_body .= "Name: $name\n";
+        $email_body .= "Email: $email\n";
+        $email_body .= "Subject: $subject\n\n";
+        $email_body .= "Message:\n$message";
+
+        // Send email
+        if (mail($to, $email_subject, $email_body, $headers)) {
+            $success_message = "Thank you for your message, $name! We'll get back to you soon.";
+        } else {
+            $errors[] = "Sorry, there was an error sending your message. Please try again later.";
+        }
+    }
 }
 ?>
 
+<section class="contact-section">
+    <div class="container contact-container">
+        <h2>Get In Touch</h2>
+        <div class="contact-wrapper">
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>Chilobwe, Blantyre<br>Malawi</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>dambwedesigns@gmail.com</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <p>+265 897644624</p>
+                </div>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
-    
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <?php if (isset($success_message)): ?>
+                    <div class="alert success">
+                        <?php echo $success_message; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($errors)): ?>
+                    <div class="alert error">
+                        <?php foreach($errors as $error): ?>
+                            <p><?php echo htmlspecialchars($error); ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" name="subject" id="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea name="message" id="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
 <style>
 
-*	{
-    Box-sizing: border-box;
-    Margin: 0;
-    Padding: 0;
-    Font-family: Arial, sans-serif;
+:root {
+    --color-primary:  #243346;
+    --color-primary-light: #214b77;
+    --color-primar-variant: #0056b3;
+    --color-gray-900: #011e31;
+    --color-gray-700: #767e86;
+    --color-gray-300: rgba(242, 242, 254, 0.3);
+    --color-gray-200: rgba(242, 242, 254, 0.7);
+    --color-green: #106935;
+    --color-green-light: hsl(145, 74%, 24%, 15%);
+    --color-white: #fff;
+    --color-bg: #2e3a46;
+    --red-color: #7c1010;
+    --red-color-light: hsl(0, 76%, 8%);
+
+    --transition: all 300ms ease;
+
+
+    --container-width-lg: 74%;
+    --container-width-md: 88%;
+    --form-width-: 40%;
+
+    --card-boder-radius-1: 0.1rem;
+    --card-boder-radius-2: 0.2rem;
+    --card-boder-radius-3: 0.4rem;
+    --card-boder-radius-4: 1rem;
+    --card-boder-radius-5: 3rem;
+  }
+.contact-section {
+    padding: 5rem 0;
+    background-color: var(--color-bg);
 }
 
-body {
-    Background-color: #f4f4f4;
-    Display: flex;
-    Justify-content: center;
-    Align-items: center;
-    Height: 100vh;
+.contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
-.checkout-container {
-    Background-color: white;
-    Border-radius: 8px;
-    Padding: 20px;
-    Box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    Width: 400px;
+.contact-container h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--color-white);
 }
 
-.checkout-form h2 {
-    Margin: 20px 0 10px;
+.contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
 }
 
-.input-group {
-    Margin-bottom: 10px;
+.contact-info {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 2rem;
+    border-radius: 10px;
 }
 
-.input-group label {
-    Display: block;
-    Margin-bottom: 5px;
+.contact-info h3 {
+    margin-bottom: 2rem;
 }
 
-.input-group input[type="text"],
-.input-group input[type="email"],
-.input-group input[type="tel"],
-.input-group input[type="radio"] {
-    Width: 100%;
-    Padding: 8px;
-    Border: 1px solid #ccc;
-    Border-radius: 4px;
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
-.cart-item {
-    Display: flex;
-    Justify-content: space-between;
-    Align-items: center;
-    Margin-bottom: 20px;
+.info-item i {
+    margin-right: 1rem;
+    font-size: 1.2rem;
 }
 
-.cart-item label {
-    Font-size: 16px;
-    Font-weight: bold;
+.social-links {
+    margin-top: 2rem;
 }
 
-.cart-item span {
-    Font-size: 16px;
-    Color: green;
+social-links a {
+    color: var(--color-white);
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    transition: color 0.3s;
 }
 
-.remove-cart {
-    Font-size: 14px;
-    Color: red;
-    Text-decoration: none;
+social-links a:hover {
+    color: var(--color-primary-light);
 }
 
-.payment-method input {
-    Margin-right: 5px;
+.contact-form {
+    background: var(--color-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.terms {
-    Display: flex;
-    Align-items: center;
-    Margin: 20px 0;
+.form-group {
+    margin-bottom: 1.5rem;
 }
 
-.terms input[type="checkbox"] {
-    Margin-right: 10px;
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-dark);
 }
 
-.terms a {
-    Color: blue;
-    Text-decoration: none;
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
 }
 
-.checkout-btn {
-    Width: 100%;
-    Background-color: #007bff;
-    Color: white;
-    Border: none;
-    Padding: 10px;
-    Border-radius: 4px;
-    Cursor: pointer;
+.form-group textarea {
+    resize: vertical;
 }
 
-.checkout-btn:hover {
-    Background-color: #0056b3;
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
 }
 
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+    .contact-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 
-</head>
-<body>
-    <div class="checkout-container">
-        <form action="checkout.php" method="POST" class="checkout-form">
-            <!--Cart Item -->
-            <div class="cart-item">
-                <label for="subscription">One year</label>
-                <span>US$9</span>
-                <a href="#" class="remove-cart">Remove from cart</a>
-            </div>
-
-            <!--Contact Information -->
-            <h2>Contact Information</h2>
-            <div class="contact-info">
-                <div class="input-group">
-                    <label for="name">Name</label>
-                    <input type="text" name="name" id="name" value="Kelvin Katoya" required>
-                </div>
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value=dambwedesigns@gmail.com required>
-                </div>
-                <div class="input-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" name="phone" id="phone" value="+265.897644624" required>
-                </div>
-                <div class="input-group">
-                    <label for="address">Address</label>
-                    <input type="text" name="address" id="address" value="Chilobwe, Blantyre" required>
-                </div>
-                <div class="input-group">
-                    <label for="city">City</label>
-                    <input type="text" name="city" id="city" value="Blantyre" required>
-                </div>
-                <div class="input-group">
-                    <label for="country">Country</label>
-                    <input type="text" name="country" id="country" value="Malawi" required>
-                </div>
-            </div>
-
-            <!-- Payment Method -->
-            <h2>Pick a payment method</h2>
-            <div class="payment-method">
-                <input type="radio" id="visa" name="payment_method" value="Visa" checked>
-                <label for="visa">Visa</label>
-                <input type="radio" id="mastercard" name="payment_method" value="Mastercard">
-                <label for="mastercard">Mastercard</label>
-                <input type="radio" id="amex" name="payment_method" value="Amex">
-                <label for="amex">AMEX</label>
-            </div>
-
-            <div class="input-group">
-                <label for="cardholder_name">Cardholder name</label>
-                <input type="text" name="cardholder_name" id="cardholder_name" value="Kelvin Katoya" required>
-            </div>
-
-            <!--Terms and Submit Button -->
-            <div class="terms">
-                <input type="checkbox" name="agree" required>
-                <label for="agree">By continuing, you agree to our <a href="#">Terms of Service</a>.</label>
-            </div>
-            
-            <button type="submit" class="checkout-btn">Complete Checkout</button>
-        </form>
-    </div>
-</body>
-</html>
-
-
-<?php
-//include 'partials/footer.php';
-
-
-?>
+<?php include 'partials/footer.php'; ?>
