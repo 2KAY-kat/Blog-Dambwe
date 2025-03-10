@@ -24,7 +24,7 @@
     </div>
 
     
-    <div class="container footer__container">
+    <div id="#categories" class="container footer__container">
         <article>
             <h4>Categories (Non-Clickable)</h4>
             <ul>

@@ -3250,9 +3250,11 @@ nav button#close__nav-btn {
     color: var(--color-red);
 }
 
+/**********************
+***********************
+notification page styles *****************
+**********************/
 
-
-/* Add to style.css */
 .notification {
     cursor: pointer;
 }
@@ -3369,4 +3371,35 @@ nav button#close__nav-btn {
 
 .notification__info p {
     line-height: 1.4;
+}
+
+/**** recent posts custom styles ***/
+
+.recent-posts {
+    padding: 5rem 0;
+}
+
+.recent-posts__container {
+    width: var(--container-width-lg);
+    margin: 0 auto;
+}
+
+.recent-posts__container h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--color-white);
+}
+
+@media screen and (max-width: 1024px) {
+    .posts__container {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .posts__container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
 }
