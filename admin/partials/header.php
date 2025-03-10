@@ -41,8 +41,10 @@ $_SESSION['user_is_admin'] = $current_user['is_admin'];
                 <li><a href="<?= ROOT_URL ?>about.php">About</a></li>
                 <li><a href="<?= ROOT_URL ?>services.php">Services</a></li>
                 <li><a href="<?= ROOT_URL ?>contact.php">Contact</a></li>
-            </ul>
-                <?php if(isset($_SESSION['user-id'])) : ?>
+            </ul>             
+        
+        <div class="nav__buttons">
+        <?php if(isset($_SESSION['user-id'])) : ?>
                 <li class="nav__profile">
                     <div class="avatar">
                         <img src="<?= ROOT_URL . 'images/' . $current_user['avatar'] ?>">
@@ -61,8 +63,6 @@ $_SESSION['user_is_admin'] = $current_user['is_admin'];
             </ul>
 
             <?php endif; ?>
-        
-        <div class="nav__buttons">
             <?php if(isset($_SESSION['user-id'])) : ?>
                 <div class="notifications-icon">
                     <i class="fa-regular fa-bell"></i>

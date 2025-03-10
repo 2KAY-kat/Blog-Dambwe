@@ -48,10 +48,12 @@ if(isset($_SESSION['user-id'])) {
             <li><a href="<?= ROOT_URL ?>services.php">Services</a></li>
             <li><a href="<?= ROOT_URL ?>contact.php">Contact</a></li>
             </ul>
-            <?php if(isset($_SESSION['user-id'])) : ?>
+        
+        <div class="nav__buttons">
+        <?php if(isset($_SESSION['user-id'])) : ?>
                 <li class="nav__profile">
                     <div class="avatar">
-                        <img src="<?= ROOT_URL . 'images/' . ($avatar['avatar'] ?: 'default-avatar.png') ?>">
+                       <a href="<?= ROOT_URL ?>admin/profile.php"> <img src="<?= ROOT_URL . 'images/' . ($avatar['avatar'] ?: 'default-avatar.png') ?>"></a>
                     </div>
                     <ul>
                         <?php if(strpos($_SERVER['PHP_SELF'], '/admin/') !== false): ?>
@@ -69,9 +71,9 @@ if(isset($_SESSION['user-id'])) {
                 <li><a class="signin-btn" href="<?= ROOT_URL ?>signin.php"><i class="fa fa-sign-in"></i> login</a></li>
                 <li><a class="sign-up-btn" href="<?= ROOT_URL ?>signup.php"><i class="fa fa-sign-in"></i> Signup</a></li>
                 <?php endif ?>
-           
-        
-        <div class="nav__buttons">
+
+
+
             <?php if(isset($_SESSION['user-id'])) : ?>
                 <div class="notifications-icon">
                     <i class="fa-regular fa-bell"></i>
