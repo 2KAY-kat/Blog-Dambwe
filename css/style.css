@@ -3126,7 +3126,7 @@ nav button#close__nav-btn {
 .reactions-count {
     background: var(--color-gray-900);
     padding: 0.5rem 1rem;
-    border-radius: var(--card-boder-radius-2);
+    border-radius: var (--card-boder-radius-2);
     margin-bottom: 1rem;
     color: var(--color-white);
     font-weight: 500;
@@ -3207,103 +3207,7 @@ nav button#close__nav-btn {
 .notifications__list {
     max-width: 800px;
     margin: 0 auto;
-}
-
-.notification {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: var(--color-white);
-    border-radius: var(--card-border-radius-1);
-    box-shadow: var(--box-shadow);
-    transition: var(--transition);
-}
-
-.notification.unread {
-    background: var(--color-gray-900);
-    border-left: 3px solid var(--color-primary);
-}
-
-.notification__avatar img {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.notification__info {
-    flex: 1;
-}
-
-.notification__info p {
-    margin-bottom: 0.3rem;
-}
-
-.notification__info small {
-    color: var(--color-gray-700);
-}
-
-.empty, .error, .loading {
-    text-align: center;
-    padding: 1rem;
-}
-
-.error {
-    color: var(--color-red);
-}
-
-/**********************
-***********************
-notification page styles *****************
-**********************/
-
-.notification {
-    cursor: pointer;
-}
-
-.notification:hover {
-    background: var(--color-gray-700);
-    transform: translateY(-2px);
-}
-
-.notification.unread:hover {
-    background: var(--color-gray-900);
-}
-
-.notification__info p {
-    color: var(--color-primary);
-}
-
-.notification.unread .notification__info p {
-    color: var(--color-bg);
-}
-
-.notification.read {
-    background: var(--color-gray-900);
-    opacity: 0.8;
-}
-
-.notification.unread {
-    background: var(--color-primar-variant);
-    border-left: 3px solid var(--color-primary);
-}
-
-/* Add this to your existing CSS */
-.comment.highlighted {
-    animation: highlight 3s ease-out;
-}
-
-@keyframes highlight {
-    0% {
-        background-color: var(--color-primary);
-        opacity: 0.5;
-    }
-    100% {
-        background-color: transparent;
-        opacity: 1;
-    }
+    margin-top: 2rem;
 }
 
 .notification {
@@ -3375,6 +3279,92 @@ notification page styles *****************
 
 .notification__info p {
     line-height: 1.4;
+}
+
+.notification.unread {
+    border-left: 4px solid var(--color-primary);
+    background: var(--color-bg);
+}
+
+.notification__message {
+    margin-bottom: 0.5rem;
+}
+
+.notification__message a {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.notification__time {
+    font-size: 0.8rem;
+    color: var(--color-gray-700);
+}
+
+.notifications__header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.empty, .error, .loading {
+    text-align: center;
+    padding: 1rem;
+}
+
+.error {
+    color: var(--color-red);
+}
+
+/**********************
+***********************
+notification page styles *****************
+**********************/
+
+.notification {
+    cursor: pointer;
+}
+
+.notification:hover {
+    background: var(--color-gray-700);
+    transform: translateY(-2px);
+}
+
+.notification.unread:hover {
+    background: var(--color-gray-900);
+}
+
+.notification__info p {
+    color: var(--color-primary);
+}
+
+.notification.unread .notification__info p {
+    color: var(--color-bg);
+}
+
+.notification.read {
+    background: var(--color-gray-900);
+    opacity: 0.8;
+}
+
+.notification.unread {
+    background: var(--color-primar-variant);
+    border-left: 3px solid var(--color-primary);
+}
+
+/* Add this to your existing CSS */
+.comment.highlighted {
+    animation: highlight 3s ease-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: var(--color-primary);
+        opacity: 0.5;
+    }
+    100% {
+        background-color: transparent;
+        opacity: 1;
+    }
 }
 
 /**** recent posts custom styles ***/
