@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    const BlogApp = { ROOT_URL: window.ROOT_URL }; // Initialize BlogApp with ROOT_URL
     const postId = $('input[name="post_id"]').val();
 
     let currentCommentId = null;
@@ -279,3 +280,130 @@ $(document).ready(function() {
     // Initial load of comments
     loadComments();
 });
+
+$(document).ready(function() {
+    // Handle comment form submission
+    $('.add-comment-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        const submitBtn = $(form).find('button[type="submit"]');
+        
+        // Disable submit button while processing
+        submitBtn.prop('disabled', true);
+
+        $.ajax({
+            url: form.action,
+            method: 'POST',
+            data: $(form).serialize(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                console.log('Comment response:', response);
+                if (response.status === 'success') {
+                    // Clear the form
+                    form.reset();
+                    
+                    // Optionally refresh comments or add the new comment to the list
+                    if (typeof window.loadComments === 'function') {
+                        window.loadComments();
+                    }
+                    
+                    // Show success message
+                    alert('Comment added successfully');
+                } else {
+                    alert(response.message || 'Error adding comment');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Comment error:', error);
+                alert('Failed to add comment. Please try again.');
+            },
+            complete: function() {
+                // Re-enable submit button
+                submitBtn.prop('disabled', false);
+            }
+        });
+    });
+});
+
+// Handle comment form submission
+$('.comment-form').on('submit', function(e) {
+    e.preventDefault();
+    const form = $(this);
+    const submitBtn = form.find('button[type="submit"]');
+    
+    // Get required data
+    const postId = form.find('input[name="post_id"]').val();
+    const commentText = form.find('textarea[name="comment_body"]').val();
+    const parentId = form.find('input[name="parent_id"]').val() || null;
+
+    // Disable submit button while processing
+    submitBtn.prop('disabled', true);
+
+    $.ajax({
+        url: ROOT_URL + 'add-comment-logic.php',
+        method: 'POST',
+        data: {
+            post_id: postId,
+            comment_body: commentText,
+            parent_id: parentId
+        },
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        success: function(response) {
+            console.log('Comment response:', response);
+            if (response.status === 'success') {
+                // Clear the form
+                form[0].reset();
+                
+                // Refresh comments
+                if (typeof window.loadComments === 'function') {
+                    window.loadComments();
+                }
+                
+                // Create notification
+                createNotificationForComment(response.comment_id);
+            } else {
+                alert(response.message || 'Error adding comment');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Comment error:', error);
+            alert('Failed to add comment. Please try again.');
+        },
+        complete: function() {
+            // Re-enable submit button
+            submitBtn.prop('disabled', false);
+        }
+    });
+});
+
+function createNotificationForComment(commentId) {
+    const postTitle = $('h2').first().text(); // Get post title from the page
+
+    fetch(`${ROOT_URL}api/create-notification.php`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            recipient_id: window.postAuthorId,
+            sender_id: window.userId,
+            post_id: window.postId,
+            comment_id: commentId,
+            type: 'comment',
+            message: `commented on your post "${postTitle}"`
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            console.error('Failed to create notification:', data.error);
+        }
+    })
+    .catch(err => {
+        console.error('Error creating notification:', err);
+    });
+}
