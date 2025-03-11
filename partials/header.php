@@ -76,7 +76,9 @@ if(isset($_SESSION['user-id'])) {
 
             <?php if(isset($_SESSION['user-id'])) : ?>
                 <div class="notifications-icon">
-                    <i class="fa-regular fa-bell"></i>
+                    <a href="<?= ROOT_URL ?>admin/notifications.php">
+                        <i class="fa-regular fa-bell"></i>
+                    </a>
                     <span class="notification-count"></span>
                 </div>
             <?php endif; ?>
