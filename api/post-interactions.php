@@ -92,12 +92,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $counts['recent_users'] = $recent_users;
 
+        // Get post author ID and title
+        $author_query = "SELECT p.author_id, p.title, u.firstname, u.lastname 
+                        FROM posts p 
+                        JOIN users u ON p.author_id = u.id 
+                        WHERE p.id = ?";
+        $stmt = mysqli_prepare($connection, $author_query);
+        mysqli_stmt_bind_param($stmt, "i", $post_id);
+        mysqli_stmt_execute($stmt);
+        $post_info = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
         mysqli_commit($connection);
         
         echo json_encode([
             'success' => true,
-            'counts' => $counts,
-            'state' => $state
+            'state' => $state,
+            'counts' => [
+                'likes_count' => $counts['likes_count'],
+                'dislikes_count' => $counts['dislikes_count'],
+                'recent_users' => $counts['recent_users'],
+                'total_count' => $counts['total_count']
+            ],
+            'post_author_id' => $post_info['author_id'],
+            'post_title' => $post_info['title']
         ]);
     } catch (Exception $e) {
         mysqli_rollback($connection);
