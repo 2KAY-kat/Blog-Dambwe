@@ -159,7 +159,7 @@ include 'partials/header.php';
                 <form class="comment-form" id="main-comment-form">
                     <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
                     <input type="hidden" name="parent_id" value="0">
-                    <textarea name="comment_text" placeholder="Write a comment..." required></textarea>
+                    <textarea name="comment_body" placeholder="Write a comment..." required></textarea>
                     <div class="form-buttons">
                         <button type="submit" class="btn">Post Comment</button>
                     </div>
@@ -167,7 +167,7 @@ include 'partials/header.php';
             </div>
         <?php else: ?>
             <div class="sign-in-prompt">
-                <p>Please <a href="signin.php">sign in</a> to join the discussion.</p>
+                <p>Please <a href="<?= ROOT_URL ?>signin.php">sign in</a> to join the discussion.</p>
             </div>
         <?php endif; ?>
         
@@ -176,9 +176,9 @@ include 'partials/header.php';
             <div class="loader"></div>
         </div>
     </div>
-
 </div>
 
+<!-- Delete Modal -->
 <div id="delete-modal" class="modal">
     <div class="modal-content">
         <h3>Delete Comment</h3>
@@ -193,80 +193,81 @@ include 'partials/header.php';
 </section>
 
 <?php
-// After displaying the current post, add this section for recommendations
+// Related Posts Section
 $current_post_id = $post['id'];
-
-// Get categories of current post
-$category_query = "SELECT category_id FROM post_categories WHERE post_id = $current_post_id";
-$category_result = mysqli_query($connection, $category_query);
+$category_query = "SELECT category_id FROM post_categories WHERE post_id = ?";
+$stmt = mysqli_prepare($connection, $category_query);
+mysqli_stmt_bind_param($stmt, "i", $current_post_id);
+mysqli_stmt_execute($stmt);
+$category_result = mysqli_stmt_get_result($stmt);
 $category_ids = [];
+
 while($category = mysqli_fetch_assoc($category_result)) {
     $category_ids[] = $category['category_id'];
 }
 
 if(!empty($category_ids)) {
-    // Get related posts that share categories with current post
     $categories_list = implode(',', $category_ids);
     $related_posts_query = "SELECT DISTINCT p.*, u.firstname, u.lastname, u.avatar 
                            FROM posts p 
-                           JOIN post_categories pc ON p.id = pc.post_id 
                            JOIN users u ON p.author_id = u.id 
+                           JOIN post_categories pc ON p.id = pc.post_id 
                            WHERE pc.category_id IN ($categories_list) 
-                           AND p.id != $current_post_id 
+                           AND p.id != ? 
                            LIMIT 3";
-    $related_posts_result = mysqli_query($connection, $related_posts_query);
+    $stmt = mysqli_prepare($connection, $related_posts_query);
+    mysqli_stmt_bind_param($stmt, "i", $current_post_id);
+    mysqli_stmt_execute($stmt);
+    $related_posts_result = mysqli_stmt_get_result($stmt);
+    
+    if(mysqli_num_rows($related_posts_result) > 0):
 ?>
-
-    <?php if(!empty($category_ids)) : ?>
-        <section class="posts recommended-posts">
-        <h2 class="contained" style="text-align: center; margin-bottom: 2rem;">Similar Posts</h2>
-            <div class="container posts__container">
-                
-                <?php while($related_post = mysqli_fetch_assoc($related_posts_result)): ?>
-                    <article class="post">
-                        <div class="post__thumbnail">
-                            <img src="<?= ROOT_URL ?>images/<?= $related_post['thumbnail'] ?>">
-                        </div>
-                        <div class="post__info">
-                            <h3 class="post__title">
-                                <a href="<?= ROOT_URL ?>post.php?id=<?= $related_post['id'] ?>">
-                                    <?= $related_post['title'] ?>
-                                </a>
-                            </h3>
-                            <p class="post__body">
-                                <?= substr($related_post['body'], 0, 150) ?>...
-                            </p>
-                            <div class="post__author">
-                                <div class="post__author-avatar">
-                                    <img src="<?= ROOT_URL ?>images/<?= $related_post['avatar'] ?>">
-                                </div>
-                                <div class="post__author-info">
-                                    <div class="post__author-info">
-                                        <h5>By: <?= "{$related_post['firstname']} {$related_post['lastname']}" ?></h5>
-                                        <small><?= timeAgo($related_post['date_time']) ?></small>
-                                    </div>
-                                </div>
+    <section class="posts recommended-posts">
+        <h2 class="contained">Similar Posts</h2>
+        <div class="container posts__container">
+            <?php while($related_post = mysqli_fetch_assoc($related_posts_result)): ?>
+                <article class="post">
+                    <div class="post__thumbnail">
+                        <img src="<?= ROOT_URL ?>images/<?= $related_post['thumbnail'] ?>" alt="Post thumbnail">
+                    </div>
+                    <div class="post__info">
+                        <h3 class="post__title">
+                            <a href="<?= ROOT_URL ?>post.php?id=<?= $related_post['id'] ?>">
+                                <?= htmlspecialchars($related_post['title']) ?>
+                            </a>
+                        </h3>
+                        <p class="post__body">
+                            <?= htmlspecialchars(substr($related_post['body'], 0, 150)) ?>...
+                        </p>
+                        <div class="post__author">
+                            <div class="post__author-avatar">
+                                <img src="<?= ROOT_URL ?>images/<?= $related_post['avatar'] ?>" alt="Author">
                             </div>
-                        </article>
-                    <?php endwhile ?>
-                </div>
-            </div>
-        </section>
-    <?php endif ?>
-<?php } ?>
-
-<!------------ end single post  ----------------------->
+                            <div class="post__author-info">
+                                <h5>By: <?= htmlspecialchars("{$related_post['firstname']} {$related_post['lastname']}") ?></h5>
+                                <small><?= timeAgo($related_post['date_time']) ?></small>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            <?php endwhile; ?>
+        </div>
+    </section>
+<?php 
+    endif;
+}
+?>
 
 <!-- Scripts -->
 <script>
     window.ROOT_URL = '<?= ROOT_URL ?>';
     window.postId = <?= $post['id'] ?>;
     window.userId = <?= isset($_SESSION['user-id']) ? $_SESSION['user-id'] : 'null' ?>;
+    window.postAuthorId = <?= $post['author_id'] ?>;
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="<?= ROOT_URL ?>js/global.js"></script>
 <script src="<?= ROOT_URL ?>js/comments.js"></script>
 <script src="<?= ROOT_URL ?>js/interactions-likes.js"></script>
-<script src="<?= ROOT_URL ?>js/social-share.js"></script>
 
 <?php include 'partials/footer.php'; ?>
