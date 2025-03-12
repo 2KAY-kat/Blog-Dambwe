@@ -116,6 +116,32 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     updateReactionCounts(postId, response.counts, response.state, type);
+                    
+                    // Only create notification if reaction was added (not removed)
+                    if (response.state === 'added' && response.post_author_id) {
+                        // Create notification
+                        fetch(`${window.ROOT_URL}api/create-notification.php`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                recipient_id: response.post_author_id,
+                                sender_id: window.userId,
+                                post_id: postId,
+                                type: type,
+                                message: `${type}d your post "${response.post_title}"`,
+                                comment_id: null
+                            })
+                        }).then(res => res.json())
+                          .then(data => {
+                            if (!data.success) {
+                                console.error('Failed to create notification:', data.error);
+                            }
+                        }).catch(err => {
+                            console.error('Error creating notification:', err);
+                        });
+                    }
                 } else if (response.error) {
                     if (response.error === 'Please login to interact') {
                         window.location.href = window.ROOT_URL + 'signin.php';
