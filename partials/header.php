@@ -42,14 +42,23 @@ if(isset($_SESSION['user-id'])) {
     <nav>
     <div class="container nav__container">
         <a href="<?= ROOT_URL ?>" class="nav__logo"><img src="<?= ROOT_URL ?>partials/favicon.ico" alt=""></a>
+        <div class="nav__buttons">
         <ul class="nav__items">
-            <li><a href="<?= ROOT_URL ?>blog.php">Blog</a></li>
+            <li><a href="<?= ROOT_URL ?>blog.php"><i class="fa fa-blog"></i></a></li>
             <li><a href="<?= ROOT_URL ?>about.php">About</a></li>
             <li><a href="<?= ROOT_URL ?>services.php">Services</a></li>
             <li><a href="<?= ROOT_URL ?>contact.php">Contact</a></li>
-            </ul>
+        </ul>
         
-        <div class="nav__buttons">
+        <?php if(isset($_SESSION['user-id'])) : ?>
+                <div class="notifications-icon">
+                    <a href="<?= ROOT_URL ?>admin/notifications.php">
+                        <i class="fa-regular fa-bell"></i>
+                    </a>
+                    <span class="notification-count"></span>
+                </div>
+            <?php endif; ?>
+            
         <?php if(isset($_SESSION['user-id'])) : ?>
                 <li class="nav__profile">
                     <div class="avatar">
@@ -72,16 +81,6 @@ if(isset($_SESSION['user-id'])) {
                 <li><a class="sign-up-btn" href="<?= ROOT_URL ?>signup.php"><i class="fa fa-sign-in"></i> Signup</a></li>
                 <?php endif ?>
 
-
-
-            <?php if(isset($_SESSION['user-id'])) : ?>
-                <div class="notifications-icon">
-                    <a href="<?= ROOT_URL ?>admin/notifications.php">
-                        <i class="fa-regular fa-bell"></i>
-                    </a>
-                    <span class="notification-count"></span>
-                </div>
-            <?php endif; ?>
             <button id="open__nav-btn"><i class="fas fa-bars"></i></button>
             <button id="close__nav-btn"><i class="fas fa-times"></i></button>
         </div>
