@@ -53,9 +53,10 @@ unset($_SESSION['signin_data']);
         <form action="<?= ROOT_URL ?>signin-logic.php" method="post">
             <input type="text" name="username_email" value="<?= $username_email ?>" placeholder="Username or Email">
             <input type="password" name="password" value="<?= $password ?>" placeholder="Password">
+            <small style="border-left: solid 5px #011e31; padding: 5px;"> <a href="forget-password.php">Forgot Password?</a></small>
 
             <button class="btn" type="submit" name="submit">Sign In</button>
-            <small>Dont have an account? <a href="signup.php">Sign Up</a></small>
+            <small style="border-left: solid 5px #011e31; padding: 5px;">Dont have an account? <a href="signup.php">Sign Up</a></small>
         </form>
     </div>
 </section>

@@ -78,13 +78,13 @@ $confirmpassword = $_SESSION['signup-data']['confirmpassword'] ?? null;
                         <img id="avatar-preview" src="<?= ROOT_URL ?>images/default-avatar.png" alt="Avatar Preview">
                     </div>
                     <input type="file" name="avatar" id="avatar" accept="image/*" onchange="previewImage(this)">
-                    <small>You can leave this blank and update it later in your profile settings.</small>
+                    <small style="border-left: solid 5px #011e31; padding: 5px;">You can leave this blank and update it later in your profile settings.</small>
                 </div>
                 <button type="submit" class="btn" name="submit">Sign Up</button>
             <?php endif ?>
 
             <?php if ($step < 3) : ?>
-                <small>Already have an account? <a href="signin.php">Sign In</a></small>
+                <small style="border-left: solid 5px #011e31; padding: 5px;">Already have an account? <a href="signin.php">Sign In</a></small>
             <?php endif ?>
         </form>
     </div>
