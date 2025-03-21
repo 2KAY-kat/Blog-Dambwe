@@ -3,7 +3,8 @@ require 'config/database.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user-id'])) {
-    die("You must be logged in to repost.");
+    echo json_encode(['success' => false, 'message' => 'Please log in to repost posts']);
+    exit;
 }
 
 // Check if the request method is POST
