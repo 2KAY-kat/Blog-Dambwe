@@ -72,8 +72,13 @@ Blog-Dambwe/
 
 ## License
 
-[Your chosen license]
+not yet applicable
 
 ## Contact
 
-[Your contact information]
+Chilobwe, Blantyre
+Malawi
+
+dambwedesigns@gmail.com
+
++265 897644624
