@@ -12,7 +12,7 @@ A dynamic PHP-based blog platform with user authentication, content management, 
 - Post creation and management
 - User profile management with avatars
 - Comment system
-
+- Repost system
 ## Tech Stack
 
 - PHP
@@ -60,7 +60,6 @@ Blog-Dambwe/
 ├── images/       # Uploaded images
 ├── partials/     # Reusable PHP components
 ├── web-assets/   # Static assets
-└── database/     # Database files
 ```
 
 ## Contributing
