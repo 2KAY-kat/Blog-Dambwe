@@ -241,15 +241,30 @@ $thumbnail = $post['thumbnail'] ?? null;
             },
             body: `post_id=${postId}`
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.text();
-        })
+        .then(response => response.json())
         .then(data => {
-            alert(data);
-            location.reload();
+            if (data.success) {
+                // Show success message
+                alert(data.message);
+                
+                // Update UI immediately
+                const repostBtn = document.querySelector(`[onclick="repostPost(${postId})"]`);
+                if (repostBtn) {
+                    const isNowReposted = data.action === 'added';
+                    repostBtn.style.color = isNowReposted ? '#6C63FF' : '';
+                    repostBtn.closest('.interaction-item').classList.toggle('active', isNowReposted);
+                    
+                    // Update count
+                    const countSpan = repostBtn.parentElement.querySelector('.interaction-count');
+                    if (countSpan) {
+                        let count = parseInt(countSpan.textContent);
+                        count = isNowReposted ? count + 1 : count - 1;
+                        countSpan.textContent = count;
+                    }
+                }
+            } else {
+                alert(data.message || 'Error processing your request');
+            }
         })
         .catch(error => {
             console.error('Error:', error);
